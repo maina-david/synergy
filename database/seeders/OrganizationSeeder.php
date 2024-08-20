@@ -7,6 +7,7 @@ use App\Models\Administration\Organization;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class OrganizationSeeder extends Seeder
 {
@@ -25,6 +26,8 @@ class OrganizationSeeder extends Seeder
 
         $user = $organization->users->first();
 
-        $user->assignRole(RoleEnum::OWNER);
+        $role = Role::create(['name' => RoleEnum::OWNER]);
+        
+        $user->assignRole($role);
     }
 }

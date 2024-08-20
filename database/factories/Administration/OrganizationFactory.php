@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Administration;
 
 use App\Enums\Admin\Organization\OrganizationType;
 use Illuminate\Database\Eloquent\Factories\Factory;
