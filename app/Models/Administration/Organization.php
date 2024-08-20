@@ -2,6 +2,8 @@
 
 namespace App\Models\Administration;
 
+use App\Enums\Admin\Organization\OrganizationType;
+use App\Models\User;
 use App\Traits\Payments\Billable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -17,7 +19,7 @@ class Organization extends Model
     use HasFactory, HasUuids, SoftDeletes, Notifiable, Billable;
 
     protected $fillable = [
-        'organization_type_id',
+        'type',
         'name',
         'description',
         'email',
@@ -26,25 +28,25 @@ class Organization extends Model
         'phone_verified_at',
         'website',
         'address',
-        'postal_code',
         'logo',
         'verified',
         'active',
     ];
 
     protected $casts = [
+        'type' => OrganizationType::class,
         'verified' => 'boolean',
         'active' => 'boolean'
     ];
 
     /**
-     * Get the organization type that owns the Organization
+     * Get all of the users for the Organization
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function organizationType(): BelongsTo
+    public function users(): HasMany
     {
-        return $this->belongsTo(OrganizationType::class);
+        return $this->hasMany(User::class);
     }
 
     /**

@@ -29,7 +29,6 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
-        'verified',
         'active'
     ];
 
@@ -54,20 +53,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'password' => 'hashed',
-            'verified' => 'boolean',
             'active' => 'boolean'
         ];
-    }
-
-    /**
-     * Scope a query to only include verified Users.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeVerified(Builder $query): Builder
-    {
-        return $query->where('verified', true);
     }
 
     /**

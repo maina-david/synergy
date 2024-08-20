@@ -4,6 +4,6 @@ namespace App\Enums\Admin;
 
 enum Role: string
 {
-    case SUPER_ADMIN = 'Super Admin';
+    case OWNER = 'Owner';
     case ORG_ADMIN = 'Organization Admin';
 }

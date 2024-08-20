@@ -4,6 +4,6 @@ namespace App\Enums\Admin\Organization;
 
 enum OrganizationType: string
 {
-    case OWNER = 'Owner';
-    case CLIENT = 'Client';
+    case OWNER = 'owner';
+    case CLIENT = 'client';
 }

@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('organizations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('organization_type_id')
-                ->constrained('organization_types', 'id')
-                ->onDelete('cascade');
+            $table->string('type');
             $table->string('name');
             $table->longText('description')->nullable();
             $table->string('email')->unique();
@@ -24,7 +22,6 @@ return new class extends Migration
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('website')->nullable();
             $table->longText('address')->nullable();
-            $table->string('postal_code')->nullable();
             $table->string('logo')->nullable();
             $table->boolean('verified')->default(false);
             $table->boolean('active')->default(false);
