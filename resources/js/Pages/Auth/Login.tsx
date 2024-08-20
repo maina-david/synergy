@@ -30,11 +30,29 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                 reset('email', 'password');
             },
             onError: () => {
-                toast({
-                    variant: "destructive",
-                    title: "Login Failed",
-                    description: errors.email || "There was a problem with your login credentials.",
-                });
+                if (errors.email) {
+                    toast({
+                        variant: 'destructive',
+                        title: 'Login Failed',
+                        description: errors.email,
+                    });
+                }
+
+                if (errors.password) {
+                    toast({
+                        variant: 'destructive',
+                        title: 'Login Failed',
+                        description: errors.password,
+                    });
+                }
+
+                if (!errors.email && !errors.password) {
+                    toast({
+                        variant: 'destructive',
+                        title: 'Login Failed',
+                        description: 'There was a problem with your login credentials.',
+                    });
+                }
             },
         });
     };
