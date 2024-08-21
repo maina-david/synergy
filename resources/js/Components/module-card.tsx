@@ -58,11 +58,11 @@ export function ModuleCard({
                     <ContextMenuSeparator />
                     <ContextMenuItem>
                         {module.is_subscribed ? (
-                            <Link method="post" href={route('module.unsubscribe', { module: module.id })} as="button">
+                            <Link preserveScroll method="post" href={route('module.unsubscribe', { module: module.id })} as="button">
                                 Unsubscribe
                             </Link>
                         ) : (
-                            <Link method="post" href={route('module.subscribe', { module: module.id })} as="button">
+                                <Link preserveScroll method="post" href={route('module.subscribe', { module: module.id })} as="button">
                                 Subscribe Now
                             </Link>
                         )}
