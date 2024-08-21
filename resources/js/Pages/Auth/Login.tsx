@@ -9,12 +9,12 @@ import {
 } from "@/Components/ui/card"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
-import { FormEventHandler } from 'react';
+import { FormEventHandler, ReactNode } from 'react';
 import { useToast } from "@/Components/ui/use-toast";
 import { FaSpinner } from "react-icons/fa";
 import GuestLayout from '@/Layouts/GuestLayout';
 
-export default function Login({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) {
+const Login = ({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) => {
     const { toast } = useToast();
     const { data, setData, setError, post, processing, errors, reset } = useForm({
         email: '',
@@ -58,7 +58,7 @@ export default function Login({ status, canResetPassword }: { status?: string, c
     };
 
     return (
-        <GuestLayout>
+        <>
             <Head title="Login" />
             <Card className="mx-auto max-w-sm">
                 <CardHeader>
@@ -118,6 +118,10 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                     </form>
                 </CardContent>
             </Card>
-        </GuestLayout>
+        </>
     )
 }
+
+Login.layout = (page: ReactNode) => <GuestLayout children={page} />
+
+export default Login
