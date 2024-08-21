@@ -69,15 +69,18 @@ class Module extends Model
      */
     public function getIsSubscribedAttribute(): bool
     {
-        $organizationId = Auth::user()->organization_id;
+        if (Auth::user()) {
+            $organizationId = Auth::user()->organization_id;
 
-        if (!$organizationId) {
-            return false;
+            if (!$organizationId) {
+                return false;
+            }
+
+            return $this->subscriptions()
+                ->where('organization_id', $organizationId)
+                ->whereDate('next_billing_date', '>', Carbon::now())
+                ->exists();
         }
-
-        return $this->subscriptions()
-            ->where('organization_id', $organizationId)
-            ->whereDate('next_billing_date', '>', Carbon::now())
-            ->exists();
+        return false;
     }
 }
