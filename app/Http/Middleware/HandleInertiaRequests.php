@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Administration\Module;
+use App\Models\Administration\ModuleCategory;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,6 +36,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'moduleCategories' => ModuleCategory::with('modules')->get(),
             'modules' => Module::active()->get(),
             'appName' => config('app.name'),
             'flash' => [

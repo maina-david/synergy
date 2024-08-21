@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('modules', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('module_category_id')
+                ->constrained('module_categories', 'id')
+                ->onDelete('cascade');
             $table->string('name');
             $table->longText('description');
             $table->string('url');
