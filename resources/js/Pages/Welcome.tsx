@@ -15,7 +15,7 @@ export default function Welcome() {
             <Head title="Welcome" />
             <div className="min-h-screen bg-gray-100 flex flex-col items-center">
                 <header className="text-center py-12">
-                    <h1 className="text-5xl font-extrabold text-gray-900 mb-6">Welcome to Our Platform</h1>
+                    <h1 className="text-5xl font-extrabold text-gray-900 mb-6">Welcome to {appName}</h1>
                     <p className="text-xl text-gray-600 mb-8">Discover our range of powerful tools designed to help you manage and grow your business.</p>
                     <Link href="/get-started" className="bg-blue-500 text-white px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300">
                         Get Started
@@ -46,7 +46,7 @@ export default function Welcome() {
 
                     <section className="py-12 bg-gray-200">
                         <h2 className="text-3xl font-semibold text-gray-800 text-center mb-8">Why Choose Us?</h2>
-                        <p className="text-lg text-gray-700 text-center mb-6">Our platform offers a range of tools designed to simplify and optimize your business operations. From CRM to finance management, we have everything you need to succeed.</p>
+                        <p className="text-lg text-gray-700 text-center mb-6">{appName} offers a range of tools designed to simplify and optimize your business operations. From CRM to finance management, we have everything you need to succeed.</p>
                         <div className="text-center">
                             <Link href="/about" className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition duration-300">
                                 Learn More About Us
