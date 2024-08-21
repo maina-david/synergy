@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('price', 5, 2)->default(0.0);
             $table->boolean('active')->nullable()->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -26,7 +26,6 @@ class Module extends Model
     ];
 
     protected $casts = [
-        'subscription_type' => SubscriptionType::class,
         'price' => 'float',
         'active' => 'boolean'
     ];
@@ -50,5 +49,15 @@ class Module extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * Accessor for subscription_type to ensure it's always returned as ucfirst.
+     *
+     * @return string
+     */
+    public function getSubscriptionTypeAttribute(): string
+    {
+        return ucfirst($this->attributes['subscription_type']);
     }
 }

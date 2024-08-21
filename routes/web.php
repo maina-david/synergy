@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Setup\ModuleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -14,9 +15,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/all-products', function () {
-    return Inertia::render('AllProducts');
-})->middleware(['auth', 'verified'])->name('products');
+Route::get('/all-products', [ModuleController::class, 'index'])->middleware(['auth', 'verified'])->name('products');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

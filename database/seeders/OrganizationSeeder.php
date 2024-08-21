@@ -27,7 +27,7 @@ class OrganizationSeeder extends Seeder
         $user = $organization->users->first();
 
         $role = Role::create(['name' => RoleEnum::OWNER]);
-        
+
         $user->assignRole($role);
     }
 }
