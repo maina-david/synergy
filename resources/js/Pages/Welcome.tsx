@@ -1,6 +1,7 @@
 import { PageProps } from '@/types';
 import { Link, Head, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { motion } from "framer-motion"
 
 export default function Welcome() {
     const { appName, moduleCategories } = usePage<PageProps>().props;
@@ -36,8 +37,11 @@ export default function Welcome() {
                             <p className="text-center text-gray-600 mb-6">{category.description}</p>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {category.modules.map((module) => (
-                                    <div
-                                        key={module.name}
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.5 }}
+                                        key={module.id}
                                         className="bg-white border rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                                     >
                                         <img
@@ -60,7 +64,7 @@ export default function Welcome() {
                                                 </Link>
                                             </div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </section>
