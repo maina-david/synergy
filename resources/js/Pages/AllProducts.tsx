@@ -14,10 +14,10 @@ export default function AllProducts() {
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
                             <h2 className="text-2xl font-semibold tracking-tight">
-                                All Available Modules
+                                All Available Apps
                             </h2>
                             <p className="text-sm text-muted-foreground">
-                                Explore our range of modules. Updated regularly.
+                                Explore our range of Apps. Updated regularly.
                             </p>
                         </div>
                     </div>

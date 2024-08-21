@@ -14,9 +14,7 @@ class ModuleController extends Controller
      */
     public function index()
     {
-        return Inertia::render('AllProducts', [
-            'modules' => Module::all(),
-        ]);
+        return Inertia::render('AllProducts');
     }
 
     /**
