@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\TaskProjectManagement;
+namespace App\Models\ProjectManagement;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectFile extends Model
+class ProjectComment extends Model
 {
     use HasFactory;
 }

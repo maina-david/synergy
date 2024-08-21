@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\PerformanceContracting;
+namespace App\Models\ProjectManagement;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ContractPeriod extends Model
+class ProjectTeam extends Model
 {
     use HasFactory;
 }

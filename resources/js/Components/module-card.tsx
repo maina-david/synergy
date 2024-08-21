@@ -65,11 +65,15 @@ export function ModuleCard({
                         <Link href="#">
                             Share
                         </Link>
-                        </ContextMenuItem>
+                    </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
             <div className="space-y-1 text-sm">
-                <h3 className="font-medium leading-none">{module.name}</h3>
+                <h3 className="font-medium leading-none">
+                    <Link href={module.url} className='hover:underline hover:text-primary'>
+                        {module.name}
+                    </Link>
+                </h3>
                 <p className="text-xs text-muted-foreground">{module.description}</p>
                 <div className="flex items-center space-x-2">
                     <Img
