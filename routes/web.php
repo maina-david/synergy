@@ -15,7 +15,7 @@ Route::get('/', function () {
 });
 
 Route::get('/all-products', function () {
-    return Inertia::render('Modules');
+    return Inertia::render('AllProducts');
 })->middleware(['auth', 'verified'])->name('products');
 
 Route::middleware('auth')->group(function () {
