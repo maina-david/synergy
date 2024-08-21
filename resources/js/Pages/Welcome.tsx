@@ -1,8 +1,15 @@
 import { PageProps } from '@/types';
 import { Link, Head, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 export default function Welcome() {
-    const { modules } = usePage<PageProps>().props
+    const { appName, modules } = usePage<PageProps>().props
+    const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear())
+
+    useEffect(() => {
+        setCurrentYear(new Date().getFullYear())
+    }, []);
+
     return (
         <>
             <Head title="Welcome" />
@@ -49,7 +56,7 @@ export default function Welcome() {
                 </main>
 
                 <footer className="bg-gray-800 text-white py-6 w-full text-center">
-                    <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+                    <p>&copy; {currentYear} {appName}. All rights reserved.</p>
                 </footer>
             </div>
         </>

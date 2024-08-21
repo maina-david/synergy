@@ -36,6 +36,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'modules' => Module::all(),
+            'appName' => config('app.name')
         ];
     }
 }
