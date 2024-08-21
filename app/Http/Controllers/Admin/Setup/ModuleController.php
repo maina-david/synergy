@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Setup;
 
+use App\Enums\Admin\Subscription\SubscriptionType;
 use App\Http\Controllers\Controller;
 use App\Models\Administration\Module;
 use Illuminate\Http\Request;
@@ -18,50 +19,35 @@ class ModuleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Subscribe to module.
      */
-    public function create()
+    public function subscribe(Request $request, Module $module)
     {
-        //
+        $organizationId = $request->user()->organization_id;
+
+        $module->subscriptions()->updateOrCreate(
+            [
+                'organization_id' => $organizationId,
+            ],
+            [
+                'subscription_type' => SubscriptionType::from(strtolower($module->subscription_type)),
+                'price' => $module->price,
+                'next_billing_date' => now()->addMonth(),
+            ]
+        );
+
+        return redirect()->back()->with('message', "Subscribed to $module->name successfully!");
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Unsubscribe from a module.
      */
-    public function store(Request $request)
+    public function unsubscribe(Request $request, Module $module)
     {
-        //
-    }
+        $organizationId = $request->user()->organization_id;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Module $module)
-    {
-        //
-    }
+        $module->subscriptions()->where('organization_id', $organizationId)->delete();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Module $module)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Module $module)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Module $module)
-    {
-        //
+        return redirect()->back()->with('message', "Unsubscribed from $module->name successfully!");
     }
 }

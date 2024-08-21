@@ -4,7 +4,11 @@ import { ModuleCard } from '@/Components/module-card'
 import { PageProps } from '@/types'
 
 export default function AllProducts() {
-    const { modules } = usePage<PageProps>().props
+    const { modules } = usePage<PageProps>().props;
+
+    console.log('====================================');
+    console.log(modules);
+    console.log('====================================');
 
     return (
         <>

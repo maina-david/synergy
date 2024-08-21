@@ -26,7 +26,7 @@ export default function Welcome() {
                     <section className="py-12">
                         <h2 className="text-3xl font-semibold text-gray-800 text-center mb-8">Our Features</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {modules.filter(module => module.active).map((module) => (
+                            {modules.map((module) => (
                                 <div key={module.name} className="bg-white border rounded-lg shadow-md overflow-hidden">
                                     <img src={module.banner} alt={module.name} className="w-full h-48 object-cover" />
                                     <div className="p-6">

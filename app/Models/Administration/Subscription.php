@@ -47,12 +47,12 @@ class Subscription extends Model
     }
 
     /**
-     * Get the module associated with the Subscription
+     * Get the module that owns the Subscription
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function module(): HasOne
+    public function module(): BelongsTo
     {
-        return $this->hasOne(Module::class);
+        return $this->belongsTo(Module::class);
     }
 }

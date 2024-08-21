@@ -1,20 +1,15 @@
 import { Img } from 'react-image'
-import { PlusCircledIcon } from '@radix-ui/react-icons'
-
 import { cn } from '@/lib/utils'
 import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem,
     ContextMenuSeparator,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
     ContextMenuTrigger,
 } from '@/Components/ui/context-menu'
-
 import { ModuleType } from '@/types/module'
 import { Link } from '@inertiajs/react'
+import { Badge } from '@/Components/ui/badge'
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
     module: ModuleType
@@ -35,7 +30,7 @@ export function ModuleCard({
         <div className={cn('space-y-3', className)} {...props}>
             <ContextMenu>
                 <ContextMenuTrigger>
-                    <div className="overflow-hidden rounded-md">
+                    <div className="relative overflow-hidden rounded-md">
                         <Img
                             src={module.banner}
                             alt={module.name}
@@ -46,6 +41,12 @@ export function ModuleCard({
                                 aspectRatio === 'portrait' ? 'aspect-[3/4]' : 'aspect-square'
                             )}
                         />
+                        <Badge
+                            variant={module.is_subscribed ? 'secondary' : 'destructive'}
+                            className="absolute top-2 right-2 text-xs px-2 py-1"
+                        >
+                            {module.is_subscribed ? 'Subscribed' : 'Not Subscribed'}
+                        </Badge>
                     </div>
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-40">
@@ -56,9 +57,15 @@ export function ModuleCard({
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem>
-                        <Link href="#">
-                            Subscribe Now
-                        </Link>
+                        {module.is_subscribed ? (
+                            <Link method="post" href={route('module.unsubscribe', { module: module.id })} as="button">
+                                Unsubscribe
+                            </Link>
+                        ) : (
+                            <Link method="post" href={route('module.subscribe', { module: module.id })} as="button">
+                                Subscribe Now
+                            </Link>
+                        )}
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem>

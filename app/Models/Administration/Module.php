@@ -2,13 +2,14 @@
 
 namespace App\Models\Administration;
 
-use App\Enums\Admin\Subscription\SubscriptionType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Module extends Model
 {
@@ -29,6 +30,8 @@ class Module extends Model
         'price' => 'float',
         'active' => 'boolean'
     ];
+
+    protected $appends = ['is_subscribed'];
 
     /**
      * Get all of the subscriptions for the Module
@@ -59,5 +62,22 @@ class Module extends Model
     public function getSubscriptionTypeAttribute(): string
     {
         return ucfirst($this->attributes['subscription_type']);
+    }
+
+    /**
+     * Accessor to determine if the current user's organization is subscribed.
+     */
+    public function getIsSubscribedAttribute(): bool
+    {
+        $organizationId = Auth::user()->organization_id;
+
+        if (!$organizationId) {
+            return false;
+        }
+
+        return $this->subscriptions()
+            ->where('organization_id', $organizationId)
+            ->whereDate('next_billing_date', '>', Carbon::now())
+            ->exists();
     }
 }

@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 import { Img } from 'react-image'
 import { Link } from '@inertiajs/react'
 import { Search } from 'lucide-react'
@@ -16,9 +16,21 @@ import {
 import { Input } from '@/Components/ui/input'
 import { usePage } from '@inertiajs/react'
 import { PageProps } from '@/types'
+import { useToast } from '@/Components/ui/use-toast'
+import { Toaster } from '@/Components/ui/toaster'
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const { auth } = usePage<PageProps>().props
+    const { toast } = useToast()
+    const { flash } = usePage<{ flash: { message?: string } }>().props;
+
+    useEffect(() => {
+        if (flash?.message) {
+            toast({
+                description: flash?.message,
+            })
+        }
+    }, [flash?.message, toast]);
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -72,6 +84,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                 </header>
                 <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
                     {children}
+                    <Toaster />
                 </main>
             </div>
         </div>

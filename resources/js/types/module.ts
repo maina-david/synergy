@@ -1,4 +1,5 @@
 export interface ModuleType {
+    is_subscribed: boolean;
     id: string,
     name: string,
     description: string,

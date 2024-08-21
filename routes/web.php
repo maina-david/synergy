@@ -2,25 +2,27 @@
 
 use App\Http\Controllers\Admin\Setup\ModuleController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('Welcome');
 });
 
-Route::get('/all-products', [ModuleController::class, 'index'])->middleware(['auth', 'verified'])->name('products');
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::controller(ModuleController::class)->group(function () {
+        Route::get('/all-products', 'index')->name('products');
+        Route::prefix('module')->group(function () {
+            Route::post('/subscribe/{module}', 'subscribe')->name('module.subscribe');
+            Route::post('/unsubscribe/{module}', 'unSubscribe')->name('module.unsubscribe');
+        });
+    });
 });
+
 
 require __DIR__ . '/auth.php';
