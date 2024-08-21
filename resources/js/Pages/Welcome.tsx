@@ -33,7 +33,7 @@ export default function Welcome() {
                                         <h3 className="text-2xl font-bold text-gray-900 mb-2">{module.name}</h3>
                                         <p className="text-gray-600 mb-4">{module.description}</p>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-xl font-semibold text-gray-900">${module.price.toFixed(2)} / month</span>
+                                            <span className="text-xl font-semibold text-gray-900">${module.price.toFixed(2)} / {module.subscription_type}</span>
                                             <Link href={module.url} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300">
                                                 Learn More
                                             </Link>
