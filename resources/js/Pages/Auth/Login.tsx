@@ -60,7 +60,7 @@ const Login = ({ status, canResetPassword }: { status?: string, canResetPassword
     return (
         <>
             <Head title="Login" />
-            <Card className="mx-auto max-w-sm">
+            <Card className="mx-auto max-w-md">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>
                     <CardDescription>

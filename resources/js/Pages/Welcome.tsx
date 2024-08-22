@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from "framer-motion"
 
 export default function Welcome() {
-    const { appName, moduleCategories } = usePage<PageProps>().props;
+    const { auth, appName, moduleCategories } = usePage<PageProps>().props;
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
 
     useEffect(() => {
@@ -21,10 +21,10 @@ export default function Welcome() {
                         Discover our range of powerful tools designed to help you manage and grow your business.
                     </p>
                     <Link
-                        href="/get-started"
+                        href={auth.user ? route('products') : route('get-started')}
                         className="bg-blue-500 text-white px-8 py-4 rounded-lg shadow-lg hover:bg-blue-600 transition duration-300"
                     >
-                        Get Started
+                        {auth.user ? 'All Apps' : 'Get Started'}
                     </Link>
                 </header>
 
