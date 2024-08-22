@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Setup\OrganizationSetupController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('get-started', [RegisteredUserController::class, 'create'])
-                ->name('get-started');
+        ->name('get-started');
 
     Route::post('register', [RegisteredUserController::class, 'store'])->name('register');
 
@@ -36,6 +37,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('organization-setup', [OrganizationSetupController::class,  'showSetupOrganization'])
+        ->name('organization.setup');
+
+    Route::post('organization-store', [OrganizationSetupController::class,  'createOrganization'])
+        ->name('organization.store');
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Administration;
 
+use App\Enums\Admin\Organization\OrganizationCategory;
 use App\Enums\Admin\Organization\OrganizationType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,6 +19,7 @@ class OrganizationFactory extends Factory
     public function definition(): array
     {
         return [
+            'category' => OrganizationCategory::CORPORATE,
             'type' => OrganizationType::CLIENT,
             'name' => fake()->name(),
             'description' => fake()->text(),
@@ -41,6 +43,42 @@ class OrganizationFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'type' => OrganizationType::OWNER,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the organization is government category.
+     */
+    public function government(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'category' => OrganizationCategory::GOVERNMENT,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the organization is CORPORATE category.
+     */
+    public function corporate(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'category' => OrganizationCategory::CORPORATE,
+            ];
+        });
+    }
+
+    /**
+     * Indicate that the organization is NONPROFIT category.
+     */
+    public function nonprofit(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'category' => OrganizationCategory::NONPROFIT,
             ];
         });
     }

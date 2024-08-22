@@ -49,10 +49,14 @@ Edit the `.env` file to configure your database and other settings.
 php artisan key:generate
 ```
 
-### 5. Run Database Migrations and Seeders
+### 5. Run Database Migrations and Seeders and link storage
 
 ```bash
 php artisan migrate --seed
+```
+
+```bash
+php artisan storage:link
 ```
 
 ### 6. Install Frontend Dependencies

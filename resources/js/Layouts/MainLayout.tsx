@@ -22,7 +22,7 @@ import { Toaster } from '@/Components/ui/toaster';
 export default function MainLayout({ children }: PropsWithChildren) {
     const { auth } = usePage<PageProps>().props;
     const { toast } = useToast();
-    const { flash } = usePage<{ flash: { message?: string } }>().props;
+    const { flash } = usePage<{ flash: { message?: string, error?: string } }>().props;
 
     useEffect(() => {
         if (flash?.message) {
@@ -30,7 +30,15 @@ export default function MainLayout({ children }: PropsWithChildren) {
                 description: flash?.message,
             });
         }
-    }, [flash?.message, toast]);
+
+        if (flash?.error) {
+            toast({
+                title: 'Uh oh! Something went wrong.',
+                description: flash?.error,
+                variant: 'destructive'
+            });
+        }
+    }, [flash?.message, flash?.error, toast]);
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">

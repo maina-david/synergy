@@ -2,6 +2,7 @@
 
 namespace App\Models\Administration;
 
+use App\Enums\Admin\Organization\OrganizationCategory;
 use App\Enums\Admin\Organization\OrganizationType;
 use App\Models\User;
 use App\Traits\Payments\Billable;
@@ -19,6 +20,7 @@ class Organization extends Model
 
     protected $fillable = [
         'type',
+        'category',
         'name',
         'description',
         'email',
@@ -34,6 +36,7 @@ class Organization extends Model
 
     protected $casts = [
         'type' => OrganizationType::class,
+        'category' => OrganizationCategory::class,
         'verified' => 'boolean',
         'active' => 'boolean'
     ];

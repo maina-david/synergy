@@ -19,7 +19,14 @@ class OrganizationSeeder extends Seeder
 
         $organization = Organization::factory()
             ->owner()
-            ->has(User::factory()->count(1))
+            ->corporate()
+            ->has(
+                User::factory()
+                    ->count(1)
+                    ->state([
+                        'email' => 'admin@example.com'
+                    ])
+            )
             ->create([
                 'name' => 'Default Organization',
             ]);

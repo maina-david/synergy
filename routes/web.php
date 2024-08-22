@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\Setup\ModuleController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\EnsureBelongsToOrganization;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -9,7 +10,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', EnsureBelongsToOrganization::class])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

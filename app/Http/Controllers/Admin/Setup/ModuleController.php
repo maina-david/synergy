@@ -7,13 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Administration\Module;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ModuleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         return Inertia::render('AllProducts');
     }
