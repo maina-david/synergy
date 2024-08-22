@@ -40,8 +40,9 @@ class HandleInertiaRequests extends Middleware
             'modules' => Module::active()->get(),
             'appName' => config('app.name'),
             'flash' => [
-                'message' => fn() => $request->session()->get('message'),
-                'error' => fn() => $request->session()->get('error')
+                'status' => fn() => $request->session()->get('status'),
+                'error' => fn() => $request->session()->get('error'),
+                'success' => fn() => $request->session()->get('success'),
             ],
         ];
     }

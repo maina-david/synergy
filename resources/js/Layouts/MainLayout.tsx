@@ -16,29 +16,26 @@ import {
 import { Input } from '@/Components/ui/input';
 import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
-import { useToast } from '@/Components/ui/use-toast';
-import { Toaster } from '@/Components/ui/toaster';
+import { Toaster } from '@/Components/ui/sonner';
+import { toast } from "sonner"
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const { auth } = usePage<PageProps>().props;
-    const { toast } = useToast();
-    const { flash } = usePage<{ flash: { message?: string, error?: string } }>().props;
+    const { flash } = usePage<{ flash: { status?: string, error?: string, success?: string } }>().props;
 
     useEffect(() => {
-        if (flash?.message) {
-            toast({
-                description: flash?.message,
-            });
+        if (flash?.status) {
+            toast(flash?.status)
         }
-
         if (flash?.error) {
-            toast({
-                title: 'Uh oh! Something went wrong.',
+            toast.error('Uh oh! Something went wrong.', {
                 description: flash?.error,
-                variant: 'destructive'
-            });
+            })
         }
-    }, [flash?.message, flash?.error, toast]);
+        if (flash?.success) {
+            toast.success(flash?.success)
+        }
+    }, [flash?.error, flash?.success, toast]);
 
     return (
         <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -99,7 +96,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                 {children}
             </main>
 
-            <Toaster />
+            <Toaster expand={true} richColors position="bottom-right" />
         </div>
     );
 }

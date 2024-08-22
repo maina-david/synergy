@@ -37,7 +37,7 @@ class ModuleController extends Controller
             ]
         );
 
-        return redirect()->back()->with('message', "Subscribed to $module->name successfully!");
+        return redirect()->back()->with('success', "Subscribed to $module->name successfully!");
     }
 
     /**
@@ -49,6 +49,6 @@ class ModuleController extends Controller
 
         $module->subscriptions()->where('organization_id', $organizationId)->delete();
 
-        return redirect()->back()->with('message', "Unsubscribed from $module->name successfully!");
+        return redirect()->back()->with('success', "Unsubscribed from $module->name successfully!");
     }
 }

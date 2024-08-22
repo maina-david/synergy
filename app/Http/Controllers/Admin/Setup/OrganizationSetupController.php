@@ -47,6 +47,7 @@ class OrganizationSetupController extends Controller
             $user = Auth::user();
             $user->organization_id = $organization->id;
             $user->save();
+            
             return redirect()->route('products')
                 ->with('success', 'Organization created successfully.');
         } catch (\Exception $e) {
