@@ -10,18 +10,20 @@ import {
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
 import { FormEventHandler, ReactNode } from 'react';
-import { useToast } from "@/Components/ui/use-toast";
+import { toast } from "sonner"
 import { FaSpinner } from "react-icons/fa";
 import GuestLayout from '@/Layouts/GuestLayout';
 
 const Login = ({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) => {
-    const { toast } = useToast();
     const { data, setData, setError, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
         remember: false,
     });
 
+    if (status) {
+        toast(status);
+    }
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
@@ -31,27 +33,21 @@ const Login = ({ status, canResetPassword }: { status?: string, canResetPassword
             },
             onError: () => {
                 if (errors.email) {
-                    toast({
-                        variant: 'destructive',
-                        title: 'Login Failed',
+                    toast.error('Login Failed', {
                         description: errors.email,
-                    });
+                    })
                 }
 
                 if (errors.password) {
-                    toast({
-                        variant: 'destructive',
-                        title: 'Login Failed',
+                    toast.error('Login Failed', {
                         description: errors.password,
-                    });
+                    })
                 }
 
                 if (!errors.email && !errors.password) {
-                    toast({
-                        variant: 'destructive',
-                        title: 'Login Failed',
-                        description: 'There was a problem with your login credentials.',
-                    });
+                    toast.error('Login Failed', {
+                        description: 'There was a problem with your login credentials.'
+                    })
                 }
             },
         });
