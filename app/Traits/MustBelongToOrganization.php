@@ -3,11 +3,26 @@
 namespace App\Traits;
 
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 trait MustBelongToOrganization
 {
     /**
-     * Check if the user belongs to an organization.
+     * Boot the trait to add a creating model event listener.
+     *
+     * @return void
+     */
+    public static function bootLinksToOrganization()
+    {
+        static::creating(function ($model) {
+            if (isset($model->organization_id)) {
+                $model->organization_id = Auth::user()->organization_id ?? null;
+            }
+        });
+    }
+
+    /**
+     * Check if the model belongs to an organization.
      *
      * @return bool
      */

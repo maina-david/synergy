@@ -2,16 +2,16 @@
 
 namespace App\Models\Administration;
 
-use App\Enums\Admin\Subscription\SubscriptionType;
+use App\Enums\Billing\Subscription\SubscriptionType;
+use App\Traits\MustBelongToOrganization;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Subscription extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, MustBelongToOrganization;
 
     protected $fillable = [
         'organization_id',
@@ -26,14 +26,11 @@ class Subscription extends Model
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'subscription_type' => SubscriptionType::class,
-            'price' => 'float',
-            'next_billing_date' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'subscription_type' => SubscriptionType::class,
+        'price' => 'float',
+        'next_billing_date' => 'datetime',
+    ];
 
 
     /**
