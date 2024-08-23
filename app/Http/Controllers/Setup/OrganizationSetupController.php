@@ -16,7 +16,7 @@ class OrganizationSetupController extends Controller
 {
     public function showSetupOrganization(Request $request)
     {
-        if ($request->user()->organization) {
+        if ($request->user()->belongsToOrganization()) {
             return redirect()->intended(route('products', absolute: false));
         }
         return Inertia::render('Setup/OrganizationSetup');
