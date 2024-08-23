@@ -2,6 +2,7 @@
 
 namespace App\Models\ProjectManagement;
 
+use App\Models\DocumentManagement\File;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,5 +36,15 @@ class ProjectFile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the file that owns the ProjectFile
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function file(): BelongsTo
+    {
+        return $this->belongsTo(File::class);
     }
 }
