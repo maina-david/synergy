@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Administration\Organization;
-use App\Traits\MustBelongToOrganization;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasRoles, MustBelongToOrganization, SoftDeletes;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.

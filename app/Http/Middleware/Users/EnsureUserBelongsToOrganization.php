@@ -17,7 +17,7 @@ class EnsureUserBelongsToOrganization
     {
         $user = $request->user();
 
-        if ($user && !$user->belongsToOrganization()) {
+        if ($user && !$user->organization) {
             return redirect()->route('organization.setup');
         }
 

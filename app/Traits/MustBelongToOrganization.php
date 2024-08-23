@@ -19,9 +19,7 @@ trait MustBelongToOrganization
     {
         static::creating(function ($model) {
             if (Auth::user()) {
-                if (isset($model->organization_id)) {
-                    $model->organization_id = Auth::user()->organization_id ?? null;
-                }
+                $model->organization_id = Auth::user()->organization_id ?? null;
             }
         });
 

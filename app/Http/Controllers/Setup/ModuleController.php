@@ -43,11 +43,9 @@ class ModuleController extends Controller
     /**
      * Unsubscribe from a module.
      */
-    public function unsubscribe(Request $request, Module $module)
+    public function unsubscribe(Module $module)
     {
-        $organizationId = $request->user()->organization_id;
-
-        $module->subscriptions()->where('organization_id', $organizationId)->delete();
+        $module->subscriptions()->delete();
 
         return redirect()->back()->with('success', "Unsubscribed from $module->name successfully!");
     }
