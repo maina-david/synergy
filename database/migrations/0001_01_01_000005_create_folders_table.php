@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('folders', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('organization_id')
+                ->constrained('organizations', 'id')
+                ->onDelete('cascade');
+            $table->foreignUuid('parent_id')
+                ->nullable()
+                ->constrained('folders', 'id')
+                ->onDelete('cascade');
+            $table->string('name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
