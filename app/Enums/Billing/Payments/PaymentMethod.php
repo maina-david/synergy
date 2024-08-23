@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums\Admin\Payments;
+namespace App\Enums\Billing\Payments;
 
 enum PaymentMethod: string
 {

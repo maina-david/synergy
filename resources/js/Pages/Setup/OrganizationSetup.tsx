@@ -14,6 +14,7 @@ import { Textarea } from "@/Components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import InputError from "@/Components/InputError";
 import { FormEventHandler } from "react";
+import { toast } from "sonner"
 
 interface FormData {
     name: string;
@@ -25,7 +26,7 @@ interface FormData {
     logo: File | undefined;
 }
 
-export default function OrganizationSetup() {
+export default function OrganizationSetup({ status }: { status?: string }) {
     const { data, setData, post, processing, errors } = useForm<FormData>({
         name: '',
         description: '',
@@ -36,6 +37,10 @@ export default function OrganizationSetup() {
         logo: undefined
     });
 
+    if (status) {
+        toast(status);
+    }
+    
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || undefined;
         setData('logo', file);

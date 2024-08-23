@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums\Admin\Subscription;
+namespace App\Enums\Billing\Subscription;
 
 enum SubscriptionType: string
 {

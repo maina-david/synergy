@@ -36,8 +36,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'moduleCategories' => ModuleCategory::with('modules')->get(),
-            'modules' => Module::active()->get(),
+            'moduleCategories' => ModuleCategory::with(['modules' => fn($query) => $query->active()])->get(),
             'appName' => config('app.name'),
             'flash' => [
                 'status' => fn() => $request->session()->get('status'),

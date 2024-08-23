@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('project_files', function (Blueprint $table) {
             $table->id();
+            $table->foreignUuid('project_id')
+                ->constrained('projects', 'id')
+                ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained('users', 'id')
+                ->onDelete('cascade');
+            $table->foreignId('file_id')
+                ->constrained('files', 'id')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Setup;
+namespace App\Http\Controllers\Setup;
 
-use App\Enums\Admin\Subscription\SubscriptionType;
+use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Http\Controllers\Controller;
 use App\Models\Administration\Module;
 use Illuminate\Http\Request;

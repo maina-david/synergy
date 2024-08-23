@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Organizations;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureBelongsToOrganization
+class EnsureOrganizationIsVerified
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,10 @@ class EnsureBelongsToOrganization
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $organization = $request->user()->organization;
 
-        if ($user && !$user->belongsToOrganization()) {
-            return redirect()->route('organization.setup');
+        if ($organization && !$organization->verified) {
+            # code...
         }
 
         return $next($request);

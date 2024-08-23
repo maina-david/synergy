@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Setup;
+namespace App\Http\Controllers\Setup;
 
 use App\Enums\Admin\Organization\OrganizationType;
 use App\Http\Controllers\Controller;
@@ -24,9 +24,9 @@ class OrganizationSetupController extends Controller
 
     /**
      * Creates a new organization
-     * 
+     *
      * @param StoreOrganizationRequest $request
-     * @return RedirectResponse 
+     * @return RedirectResponse
      */
     public function createOrganization(StoreOrganizationRequest $request): RedirectResponse
     {
@@ -47,7 +47,7 @@ class OrganizationSetupController extends Controller
             $user = Auth::user();
             $user->organization_id = $organization->id;
             $user->save();
-            
+
             return redirect()->route('products')
                 ->with('success', 'Organization created successfully.');
         } catch (\Exception $e) {

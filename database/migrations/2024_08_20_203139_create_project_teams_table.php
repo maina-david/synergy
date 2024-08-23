@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('project_teams', function (Blueprint $table) {
             $table->id();
+            $table->foreignUuid('project_id')
+                ->constrained('projects', 'id')
+                ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained('users', 'id')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

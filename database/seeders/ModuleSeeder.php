@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Admin\Subscription\SubscriptionType;
+use App\Enums\Billing\Subscription\SubscriptionType;
 use Illuminate\Database\Seeder;
 use App\Models\Administration\Module;
 use App\Models\Administration\ModuleCategory;
