@@ -12,18 +12,20 @@ use Illuminate\Validation\ValidationException;
 class FileUploadService
 {
     /**
-     * Create a folder exists
+     * Create or update a folder if it exists.
      *
      * @param  string $folderName
      * @param  string|null $parentFolderId
      * @return \App\Models\DocumentManagement\Folder
      */
-    protected function createFolder(string $folderName, ?string $parentFolderId = null): Folder
+    protected function createOrUpdateFolder(string $folderName, ?string $parentFolderId = null): Folder
     {
-        $folder = Folder::create([
-            'name' => $folderName,
-            'parent_id' => $parentFolderId
-        ]);
+        $folder = Folder::updateOrCreate(
+            [
+                'name' => $folderName,
+                'parent_id' => $parentFolderId
+            ]
+        );
 
         return $folder;
     }

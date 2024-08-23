@@ -2,21 +2,38 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 trait MustBelongToOrganization
 {
     /**
-     * Boot the trait to add a creating model event listener.
+     * Boot the trait to add a creating model event listener and global scope.
      *
      * @return void
      */
-    public static function bootLinksToOrganization()
+    public static function bootMustBelongToOrganization()
     {
         static::creating(function ($model) {
-            if (isset($model->organization_id)) {
-                $model->organization_id = Auth::user()->organization_id ?? null;
+            if (Auth::user()) {
+                if (isset($model->organization_id)) {
+                    $model->organization_id = Auth::user()->organization_id ?? null;
+                }
+            }
+        });
+
+        static::addGlobalScope(new class implements Scope {
+            public function apply(Builder $builder, Model $model)
+            {
+                if (Auth::user()) {
+                    $organizationId = Auth::user()->organization_id;
+                    if ($organizationId) {
+                        $builder->where('organization_id', $organizationId);
+                    }
+                }
             }
         });
     }
