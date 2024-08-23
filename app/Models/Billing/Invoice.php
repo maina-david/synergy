@@ -6,7 +6,7 @@ use App\Enums\Billing\Payments\InvoiceStatus;
 use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Models\Administration\Module;
 use App\Models\Administration\Organization;
-use App\Traits\MustBelongToOrganization;
+use App\Traits\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invoice extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes, MustBelongToOrganization;
+    use HasFactory, HasUuids, SoftDeletes, BelongsToOrganization;
 
     protected $fillable = [
         'organization_id',

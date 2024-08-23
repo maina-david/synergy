@@ -6,7 +6,7 @@ use App\Enums\ProjectManagement\ProjectPriority;
 use App\Enums\ProjectManagement\ProjectStatus;
 use App\Models\Administration\Organization;
 use App\Models\User;
-use App\Traits\MustBelongToOrganization;
+use App\Traits\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids, MustBelongToOrganization;
+    use HasFactory, SoftDeletes, HasUuids, BelongsToOrganization;
 
     protected $fillable = [
         'author_id',

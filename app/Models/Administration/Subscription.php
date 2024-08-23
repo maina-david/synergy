@@ -3,7 +3,7 @@
 namespace App\Models\Administration;
 
 use App\Enums\Billing\Subscription\SubscriptionType;
-use App\Traits\MustBelongToOrganization;
+use App\Traits\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Subscription extends Model
 {
-    use HasFactory, HasUuids, MustBelongToOrganization;
+    use HasFactory, HasUuids, BelongsToOrganization;
 
     protected $fillable = [
         'organization_id',

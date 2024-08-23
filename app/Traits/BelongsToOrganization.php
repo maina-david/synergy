@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Auth;
 
-trait MustBelongToOrganization
+trait BelongsToOrganization
 {
     /**
      * Boot the trait to add a creating model event listener and global scope.
      *
      * @return void
      */
-    public static function bootMustBelongToOrganization()
+    public static function bootBelongsToOrganization()
     {
         static::creating(function ($model) {
             if (Auth::user()) {

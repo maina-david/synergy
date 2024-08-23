@@ -89,7 +89,6 @@ class Module extends Model
             }
 
             return $this->subscriptions()
-                ->where('organization_id', $organizationId)
                 ->whereDate('next_billing_date', '>', Carbon::now())
                 ->exists();
         }
