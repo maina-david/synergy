@@ -6,6 +6,7 @@ use App\Enums\HRM\RecruitmentStatus;
 use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ use Illuminate\Support\Carbon;
 
 class Recruitment extends Model
 {
-    use HasFactory, BelongsToOrganization, AssociatedToUser;
+    use HasFactory, HasUuids, BelongsToOrganization, AssociatedToUser;
 
     protected $fillable = [
         'organization_id',

@@ -7,6 +7,7 @@ use App\Enums\HRM\Employees\EmployeeType;
 use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
-    use HasFactory, SoftDeletes, BelongsToOrganization, AssociatedToUser;
+    use HasFactory, HasUuids, SoftDeletes, BelongsToOrganization, AssociatedToUser;
 
     /**
      * The attributes that are mass assignable.

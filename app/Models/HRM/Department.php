@@ -5,14 +5,16 @@ namespace App\Models\HRM;
 use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Department extends Model
 {
-    use HasFactory, BelongsToOrganization, AssociatedToUser;
+    use HasFactory, HasUuids, SoftDeletes, BelongsToOrganization, AssociatedToUser;
 
     /**
      * The attributes that are mass assignable.

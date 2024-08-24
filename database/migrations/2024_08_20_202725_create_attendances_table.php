@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('clock_out_time')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\HRM\ApplicantStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Applicant extends Model
 {
-    use HasFactory, BelongsToOrganization;
+    use HasFactory, HasUuids, BelongsToOrganization;
 
     protected $fillable = [
         'organization_id',
@@ -21,15 +22,15 @@ class Applicant extends Model
         'email',
         'phone',
         'resume',
-        'cover_letter', 
-        'linkedin_profile', 
+        'cover_letter',
+        'linkedin_profile',
         'status',
         'application_date',
     ];
 
     protected $casts = [
         'application_date' => 'date',
-        'status' => ApplicantStatus::class, 
+        'status' => ApplicantStatus::class,
     ];
 
     /**
