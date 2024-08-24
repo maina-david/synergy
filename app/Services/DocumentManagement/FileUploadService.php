@@ -128,12 +128,10 @@ class FileUploadService
      */
     public function deleteFile(File $file): bool
     {
-        // Delete the file from storage
         if (Storage::disk('public')->exists($file->file_path)) {
             Storage::disk('public')->delete($file->file_path);
         }
 
-        // Delete the file record from database
         return $file->delete();
     }
 
@@ -165,9 +163,8 @@ class FileUploadService
     {
         $newPath = $this->storeFileAs($file, $newFolder);
 
-        // Update file path in database
         $file->file_path = $newPath;
-        $file->folder_id = $newFolder->id;  // Optionally update the folder_id in the database
+        $file->folder_id = $newFolder->id; 
         $file->save();
 
         return $file;
@@ -187,12 +184,10 @@ class FileUploadService
         $newFolderPath = $folder->id ? "folders/{$folder->id}" : 'files';
         $newPath = $newFolderPath . '/' . basename($oldPath);
 
-        // Check if new directory exists
         if (!$disk->exists($newFolderPath)) {
             $disk->makeDirectory($newFolderPath);
         }
 
-        // Move the file to the new directory
         $disk->move($oldPath, $newPath);
 
         return $newPath;
