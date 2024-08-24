@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Invoice extends Model
 {
@@ -23,18 +24,38 @@ class Invoice extends Model
         'subscription_type',
         'amount',
         'due_date',
-        'status'
+        'status',
+        'issued_at',
+        'paid_at'
     ];
 
     protected $casts = [
         'subscription_type' => SubscriptionType::class,
         'amount' => 'float',
         'due_date' => 'date',
+        'issued_at' => 'datetime',
+        'paid_at' => 'datetime',
         'status' => InvoiceStatus::class
     ];
 
+    protected $dates = [
+        'deleted_at'
+    ];
+
     /**
-     * Get the organization that owns the Invoice
+     * Boot method to automatically set issued_at when creating an invoice.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($invoice) {
+            $invoice->issued_at = Carbon::now();
+        });
+    }
+
+    /**
+     * Get the organization that owns the Invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -44,12 +65,56 @@ class Invoice extends Model
     }
 
     /**
-     * Get the module that owns the Invoice
+     * Get the module that owns the Invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function module(): BelongsTo
     {
         return $this->belongsTo(Module::class);
+    }
+
+    /**
+     * Mark the invoice as paid.
+     *
+     * @return bool
+     */
+    public function markAsPaid(): bool
+    {
+        $this->status = InvoiceStatus::PAID;
+        $this->paid_at = Carbon::now();
+        return $this->save();
+    }
+
+    /**
+     * Check if the invoice is overdue.
+     *
+     * @return bool
+     */
+    public function isOverdue(): bool
+    {
+        return $this->due_date->isPast() && $this->status !== InvoiceStatus::PAID;
+    }
+
+    /**
+     * Calculate the total amount of the invoice.
+     *
+     * @return float
+     */
+    public function totalAmount(): float
+    {
+        // Placeholder for any potential tax or discount calculations.
+        return $this->amount;
+    }
+
+    /**
+     * Set the invoice status as overdue if applicable.
+     */
+    public function checkAndMarkOverdue(): void
+    {
+        if ($this->isOverdue() && $this->status !== InvoiceStatus::OVERDUE) {
+            $this->status = InvoiceStatus::OVERDUE;
+            $this->save();
+        }
     }
 }

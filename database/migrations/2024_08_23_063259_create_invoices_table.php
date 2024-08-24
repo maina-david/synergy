@@ -20,9 +20,11 @@ return new class extends Migration
                 ->constrained('modules', 'id')
                 ->onDelete('cascade');
             $table->string('subscription_type');
-            $table->decimal('amount', 5, 2)->default(0.00);
+            $table->decimal('amount', 10, 2)->default(0.00);
             $table->string('status');
             $table->date('due_date');
+            $table->timestamp('issued_at')->nullable(); 
+            $table->timestamp('paid_at')->nullable();  
             $table->timestamps();
             $table->softDeletes();
         });
