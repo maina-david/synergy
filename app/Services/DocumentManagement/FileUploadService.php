@@ -5,6 +5,7 @@ namespace App\Services\DocumentManagement;
 use App\Models\DocumentManagement\File;
 use App\Models\DocumentManagement\Folder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
@@ -67,7 +68,7 @@ class FileUploadService
     }
 
     /**
-     * Store the file in the specified folder.
+     * Store the file in the specified folder, including the organization folder if applicable.
      *
      * @param  \Illuminate\Http\UploadedFile $file
      * @param  Folder $folder
@@ -75,15 +76,33 @@ class FileUploadService
      */
     protected function storeFile(UploadedFile $file, Folder $folder): string
     {
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Check if the user is authenticated and has an organization ID
+        $organizationId = $user && $user->organization_id ? $user->organization_id : null;
+
+        // Determine the base folder path
         $folderPath = $folder->id ? "folders/{$folder->id}" : 'files';
 
+        // Include organization folder path if applicable
+        if ($organizationId) {
+            $folderPath = "organizations/{$organizationId}/{$folderPath}";
+        }
+
+        // Use the public disk for storing files
         $disk = Storage::disk('public');
+
+        // Ensure the directory exists
         if (!$disk->exists($folderPath)) {
             $disk->makeDirectory($folderPath);
         }
 
+        // Store the file and return the path
         return $file->store($folderPath, 'public');
     }
+
+
 
     /**
      * Create a file record and save it to the database.
