@@ -107,7 +107,7 @@ class FileUploadService
      * @param  string|null $description
      * @return \App\Models\DocumentManagement\File
      */
-    protected function createFileRecord(UploadedFile $file, ?Folder $folder = null, string $filePath, ?string $description = null): File
+    protected function createFileRecord(UploadedFile $file, ?Folder $folder, string $filePath, ?string $description = null): File
     {
         return File::create([
             'folder_id' => $folder?->id,
