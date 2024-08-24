@@ -76,29 +76,22 @@ class FileUploadService
      */
     protected function storeFile(UploadedFile $file, Folder $folder): string
     {
-        // Get the authenticated user
         $user = Auth::user();
 
-        // Check if the user is authenticated and has an organization ID
         $organizationId = $user && $user->organization_id ? $user->organization_id : null;
 
-        // Determine the base folder path
         $folderPath = $folder->id ? "folders/{$folder->id}" : 'files';
 
-        // Include organization folder path if applicable
         if ($organizationId) {
             $folderPath = "organizations/{$organizationId}/{$folderPath}";
         }
 
-        // Use the public disk for storing files
         $disk = Storage::disk('public');
 
-        // Ensure the directory exists
         if (!$disk->exists($folderPath)) {
             $disk->makeDirectory($folderPath);
         }
 
-        // Store the file and return the path
         return $file->store($folderPath, 'public');
     }
 
