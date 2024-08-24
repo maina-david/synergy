@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('file_path');
             $table->string('file_type');
             $table->integer('file_size');
+            $table->longText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

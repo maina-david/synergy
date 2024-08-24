@@ -15,15 +15,15 @@ class FileUploadService
      * Create or update a folder if it exists.
      *
      * @param  string $folderName
-     * @param  string|null $parentFolderId
+     * @param  Folder|null $parentFolder
      * @return \App\Models\DocumentManagement\Folder
      */
-    protected function createOrUpdateFolder(string $folderName, ?string $parentFolderId = null): Folder
+    protected function createOrUpdateFolder(string $folderName, ?Folder $parentFolder = null): Folder
     {
         $folder = Folder::updateOrCreate(
             [
                 'name' => $folderName,
-                'parent_id' => $parentFolderId
+                'parent_id' => $parentFolder?->id,
             ]
         );
 
@@ -34,18 +34,18 @@ class FileUploadService
      * Upload a file and store its metadata.
      *
      * @param  \Illuminate\Http\UploadedFile $file
-     * @param  string $folderId
+     * @param  Folder $folder
      * @param  string|null $description
      * @return \App\Models\DocumentManagement\File
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function uploadFile(UploadedFile $file, string $folderId): File
+    public function uploadFile(UploadedFile $file, Folder $folder, ?string $description = null): File
     {
         $this->validateFile($file);
 
         $filePath = $this->storeFile($file);
 
-        $fileModel = $this->createFileRecord($file, $folderId, $filePath);
+        $fileModel = $this->createFileRecord($file, $folder, $filePath, $description);
 
         return $fileModel;
     }
@@ -85,20 +85,20 @@ class FileUploadService
      * Create a file record and save it to the database.
      *
      * @param  \Illuminate\Http\UploadedFile $file
-     * @param  string $folderId
+     * @param  Folder $folder
      * @param  string $filePath
      * @param  string|null $description
      * @return \App\Models\DocumentManagement\File
      */
-    protected function createFileRecord(UploadedFile $file, string $folderId, string $filePath): File
+    protected function createFileRecord(UploadedFile $file, Folder $folder, string $filePath, ?string $description = null): File
     {
-        return File::create([
-            'folder_id' => $folderId,
+        return $folder->files()->create([
             'user_id' => Auth::id(),
             'file_name' => $file->getClientOriginalName(),
             'file_path' => $filePath,
             'file_type' => $file->getClientMimeType(),
-            'file_size' => $file->getSize()
+            'file_size' => $file->getSize(),
+            'description' => $description,
         ]);
     }
 }
