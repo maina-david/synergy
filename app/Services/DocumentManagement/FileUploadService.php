@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class FileUploadService
 {
@@ -43,7 +44,7 @@ class FileUploadService
     {
         $this->validateFile($file);
 
-        $filePath = $this->storeFile($file);
+        $filePath = $this->storeFile($file, $folder);
 
         $fileModel = $this->createFileRecord($file, $folder, $filePath, $description);
 
@@ -71,14 +72,22 @@ class FileUploadService
     }
 
     /**
-     * Store the file in the storage.
+     * Store the file in the specified folder.
      *
      * @param  \Illuminate\Http\UploadedFile $file
+     * @param  Folder $folder
      * @return string
      */
-    protected function storeFile(UploadedFile $file): string
+    protected function storeFile(UploadedFile $file, Folder $folder): string
     {
-        return $file->store('files', 'public');
+        $folderPath = $folder->id ? "folders/{$folder->id}" : 'files';
+
+        $disk = Storage::disk('public');
+        if (!$disk->exists($folderPath)) {
+            $disk->makeDirectory($folderPath);
+        }
+
+        return $file->store($folderPath, 'public');
     }
 
     /**
