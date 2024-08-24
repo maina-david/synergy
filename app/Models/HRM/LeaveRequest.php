@@ -3,15 +3,17 @@
 namespace App\Models\HRM;
 
 use App\Enums\HRM\LeaveRequestStatus;
+use App\Traits\HRM\AssociatedToEmployee;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LeaveRequest extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes, AssociatedToEmployee;
 
     /**
      * The attributes that are mass assignable.

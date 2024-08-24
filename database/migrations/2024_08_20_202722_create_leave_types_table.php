@@ -20,6 +20,7 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->integer('max_days')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

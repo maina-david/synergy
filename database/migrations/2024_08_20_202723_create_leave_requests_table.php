@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamp('request_date');
             $table->string('status', 100)->nullable()->default('text');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

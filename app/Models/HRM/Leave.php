@@ -3,7 +3,6 @@
 namespace App\Models\HRM;
 
 use App\Enums\HRM\LeaveStatus;
-use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Leave extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes, AssociatedToUser;
+    use HasFactory, HasUuids, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +20,7 @@ class Leave extends Model
      */
     protected $fillable = [
         'employee_id',
-        'user_id',
+        'supervisor_id',
         'leave_request_id',
         'start_date',
         'end_date',
