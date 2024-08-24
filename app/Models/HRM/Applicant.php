@@ -14,6 +14,7 @@ class Applicant extends Model
 
     protected $fillable = [
         'organization_id',
+        'recruitment_id',
         'name',
         'email',
         'phone',
@@ -30,5 +31,15 @@ class Applicant extends Model
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    /**
+     * Get the recruitment that owns the Applicant
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function recruitment(): BelongsTo
+    {
+        return $this->belongsTo(Recruitment::class);
     }
 }

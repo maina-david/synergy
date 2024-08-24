@@ -8,6 +8,7 @@ use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Recruitment extends Model
 {
@@ -31,5 +32,15 @@ class Recruitment extends Model
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    /**
+     * Get all of the applicants for the Recruitment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function applicants(): HasMany
+    {
+        return $this->hasMany(Applicant::class);
     }
 }
