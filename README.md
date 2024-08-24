@@ -24,7 +24,7 @@ Project Synergy is a comprehensive web application designed to manage organizati
 
 ```bash
 git clone https://github.com/maina-david/synergy.git
-cd project-synergy
+cd synergy
 ```
 
 ### 2. Install Backend Dependencies
