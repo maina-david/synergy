@@ -3,14 +3,13 @@
 namespace App\Models\HRM;
 
 use App\Enums\HRM\LeaveStatus;
-use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Leave extends Model
+class LeaveRequest extends Model
 {
-    use HasFactory, AssociatedToUser;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -19,12 +18,10 @@ class Leave extends Model
      */
     protected $fillable = [
         'employee_id',
-        'user_id',
-        'leave_type',
-        'start_date',
-        'end_date',
+        'leave_id',
+        'request_date',
         'status',
-        'reason',
+        'comments',
     ];
 
     /**
@@ -33,12 +30,11 @@ class Leave extends Model
      * @var array
      */
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'request_date' => 'date',
     ];
 
     /**
-     * Get the employee that owns the leave.
+     * Get the employee that made the leave request.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -48,17 +44,17 @@ class Leave extends Model
     }
 
     /**
-     * Get the leave request associated with this leave.
+     * Get the leave associated with the leave request.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function leaveRequest()
+    public function leave(): BelongsTo
     {
-        return $this->hasOne(LeaveRequest::class);
+        return $this->belongsTo(Leave::class);
     }
 
     /**
-     * Check if the leave is approved.
+     * Check if the leave request is approved.
      *
      * @return bool
      */
