@@ -93,7 +93,6 @@ class FileUploadService
     protected function createFileRecord(UploadedFile $file, Folder $folder, string $filePath, ?string $description = null): File
     {
         return $folder->files()->create([
-            'user_id' => Auth::id(),
             'file_name' => $file->getClientOriginalName(),
             'file_path' => $filePath,
             'file_type' => $file->getClientMimeType(),
