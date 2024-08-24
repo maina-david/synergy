@@ -11,7 +11,7 @@ trait AssociatedToEmployee
      *
      * @return void
      */
-    protected static function bootAssociatedToUser(): void
+    protected static function bootAssociatedToEmployee(): void
     {
         static::creating(function ($model) {
             if (Auth::check() && empty($model->employee_id)) {
