@@ -5,7 +5,6 @@ namespace App\Services\DocumentManagement;
 use App\Models\DocumentManagement\File;
 use App\Models\DocumentManagement\Folder;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
@@ -21,14 +20,12 @@ class FileUploadService
      */
     protected function createOrUpdateFolder(string $folderName, ?Folder $parentFolder = null): Folder
     {
-        $folder = Folder::updateOrCreate(
+        return Folder::updateOrCreate(
             [
                 'name' => $folderName,
                 'parent_id' => $parentFolder?->id,
             ]
         );
-
-        return $folder;
     }
 
     /**
@@ -46,9 +43,7 @@ class FileUploadService
 
         $filePath = $this->storeFile($file, $folder);
 
-        $fileModel = $this->createFileRecord($file, $folder, $filePath, $description);
-
-        return $fileModel;
+        return $this->createFileRecord($file, $folder, $filePath, $description);
     }
 
     /**
@@ -108,5 +103,112 @@ class FileUploadService
             'file_size' => $file->getSize(),
             'description' => $description,
         ]);
+    }
+
+    /**
+     * Retrieve file metadata by ID.
+     *
+     * @param  int $fileId
+     * @return \App\Models\DocumentManagement\File|null
+     */
+    public function getFile(int $fileId): ?File
+    {
+        return File::find($fileId);
+    }
+
+    /**
+     * Delete a file from storage and database.
+     *
+     * @param  int $fileId
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteFile(int $fileId): bool
+    {
+        $file = $this->getFile($fileId);
+
+        if (!$file) {
+            throw new \Exception("File not found.");
+        }
+
+        // Delete the file from storage
+        if (Storage::disk('public')->exists($file->file_path)) {
+            Storage::disk('public')->delete($file->file_path);
+        }
+
+        // Delete the file record from database
+        return $file->delete();
+    }
+
+    /**
+     * Rename an existing file.
+     *
+     * @param  int $fileId
+     * @param  string $newName
+     * @return \App\Models\DocumentManagement\File
+     * @throws \Exception
+     */
+    public function renameFile(int $fileId, string $newName): File
+    {
+        $file = $this->getFile($fileId);
+
+        if (!$file) {
+            throw new \Exception("File not found.");
+        }
+
+        $file->file_name = $newName;
+        $file->save();
+
+        return $file;
+    }
+
+    /**
+     * Move a file to a different folder.
+     *
+     * @param  int $fileId
+     * @param  Folder $newFolder
+     * @return \App\Models\DocumentManagement\File
+     * @throws \Exception
+     */
+    public function moveFile(int $fileId, Folder $newFolder): File
+    {
+        $file = $this->getFile($fileId);
+
+        if (!$file) {
+            throw new \Exception("File not found.");
+        }
+
+        $newPath = $this->storeFileAs($file, $newFolder);
+
+        // Update file path in database
+        $file->file_path = $newPath;
+        $file->save();
+
+        return $file;
+    }
+
+    /**
+     * Store the file in a new location based on the folder.
+     *
+     * @param  \App\Models\DocumentManagement\File $file
+     * @param  Folder $folder
+     * @return string
+     */
+    protected function storeFileAs(File $file, Folder $folder): string
+    {
+        $disk = Storage::disk('public');
+        $oldPath = $file->file_path;
+        $newFolderPath = $folder->id ? "folders/{$folder->id}" : 'files';
+        $newPath = $newFolderPath . '/' . basename($oldPath);
+
+        // Check if new directory exists
+        if (!$disk->exists($newFolderPath)) {
+            $disk->makeDirectory($newFolderPath);
+        }
+
+        // Move the file to the new directory
+        $disk->move($oldPath, $newPath);
+
+        return $newPath;
     }
 }

@@ -49,7 +49,7 @@ class File extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user(): BelongsTo
+    public function uploadedBy(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
