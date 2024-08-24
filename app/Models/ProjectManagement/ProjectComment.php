@@ -3,6 +3,7 @@
 namespace App\Models\ProjectManagement;
 
 use App\Models\User;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,14 +13,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProjectComment extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids, SoftDeletes, AssociatedToUser;
 
     protected $fillable = [
         'project_id',
         'user_id',
         'parent_id',
         'comment',
-        'is_resolved'  
+        'is_resolved'
     ];
 
     /**
@@ -28,7 +29,7 @@ class ProjectComment extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_resolved' => 'boolean',  // casting the new field as boolean
+        'is_resolved' => 'boolean',  
     ];
 
     /**

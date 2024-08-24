@@ -4,6 +4,7 @@ namespace App\Models\DocumentManagement;
 
 use App\Models\DocumentManagement\Folder;
 use App\Models\User;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids, SoftDeletes, AssociatedToUser;
 
     protected $fillable = [
         'folder_id',

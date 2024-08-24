@@ -5,6 +5,7 @@ namespace App\Models\ProjectManagement;
 use App\Enums\ProjectManagement\TaskPriority;
 use App\Enums\ProjectManagement\TaskStatus;
 use App\Models\User;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +15,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids, SoftDeletes, AssociatedToUser;
 
     protected $fillable = [
         'project_id',
+        'user_id',
         'name',
         'description',
         'status',

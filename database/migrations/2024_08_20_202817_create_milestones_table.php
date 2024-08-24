@@ -20,6 +20,9 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('users', 'id')
                 ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained('users', 'id')
+                ->onDelete('cascade');
             $table->string('name');
             $table->longText('description')->nullable();
             $table->date('due_date');

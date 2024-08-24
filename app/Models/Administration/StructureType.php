@@ -2,6 +2,7 @@
 
 namespace App\Models\Administration;
 
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,10 +12,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StructureType extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids;
+    use HasFactory, SoftDeletes, HasUuids, AssociatedToUser;
 
     protected $fillable = [
         'organization_id',
+        'user_id',
         'name',
         'active'
     ];

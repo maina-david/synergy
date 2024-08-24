@@ -4,13 +4,14 @@ namespace App\Models\ProjectManagement;
 
 use App\Models\DocumentManagement\File;
 use App\Models\User;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProjectFile extends Model
 {
-    use HasFactory;
+    use HasFactory, AssociatedToUser;
 
     protected $fillable = [
         'project_id',

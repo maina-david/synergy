@@ -23,6 +23,9 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('structures', 'id')
                 ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained('users', 'id')
+                ->onDelete('cascade');
             $table->string('name');
             $table->boolean('active')
                 ->default(true);

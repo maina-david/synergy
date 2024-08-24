@@ -17,7 +17,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('projects', 'id')
                 ->onDelete('cascade');
-            $table->foreignId('author_id')
+            $table->foreignId('user_id')
                 ->constrained('users', 'id')
                 ->onDelete('cascade');
             $table->string('name');

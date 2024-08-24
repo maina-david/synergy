@@ -7,6 +7,7 @@ use App\Enums\ProjectManagement\ProjectStatus;
 use App\Models\Administration\Organization;
 use App\Models\User;
 use App\Traits\BelongsToOrganization;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,10 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids, BelongsToOrganization;
+    use HasFactory, SoftDeletes, HasUuids, BelongsToOrganization, AssociatedToUser;
 
     protected $fillable = [
-        'author_id',
+        'user_id',
         'organization_id',
         'title',
         'description',
@@ -53,7 +54,7 @@ class Project extends Model
      */
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class);
     }
 
     /**

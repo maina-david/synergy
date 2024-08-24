@@ -4,6 +4,7 @@ namespace App\Models\DocumentManagement;
 
 use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,10 +14,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Folder extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes, BelongsToOrganization;
+    use HasFactory, HasUuids, SoftDeletes, BelongsToOrganization, AssociatedToUser;
 
     protected $fillable = [
         'organization_id',
+        'user_id',
         'name',
         'parent_id'
     ];

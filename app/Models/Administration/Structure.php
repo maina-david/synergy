@@ -3,6 +3,7 @@
 namespace App\Models\Administration;
 
 use App\Traits\BelongsToOrganization;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,10 +15,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Structure extends Model
 {
-    use HasFactory, SoftDeletes, HasUuids, BelongsToOrganization;
+    use HasFactory, SoftDeletes, HasUuids, BelongsToOrganization, AssociatedToUser;
 
     protected $fillable = [
         'organization_id',
+        'user_id',
         'structure_type_id',
         'parent_id',
         'name',
