@@ -2,6 +2,7 @@
 
 namespace App\Models\HRM;
 
+use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -41,6 +42,16 @@ class Employee extends Model
         'hire_date' => 'date',
         'salary' => 'float',
     ];
+
+    /**
+     * Get the organization that the employee belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
 
     /**
      * Get the department that the employee belongs to.
