@@ -12,8 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('leaves', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('employee_id')
+                ->constrained('employees', 'id')
+                ->onDelete('cascade');
+            $table->foreignUuid('user_id')
+                ->constrained('users', 'id')
+                ->onDelete('cascade');
+            $table->foreignUuid('leave_request_id')
+                ->constrained('leave_requests', 'id')
+                ->onDelete('cascade');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

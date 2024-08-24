@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('leave_types', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('organization_id')
+                ->constrained('organizations', 'id')
+                ->onDelete('cascade');
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->integer('max_days')->unsigned();
             $table->timestamps();
         });
     }

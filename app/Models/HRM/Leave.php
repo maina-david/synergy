@@ -7,10 +7,11 @@ use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Leave extends Model
 {
-    use HasFactory, AssociatedToUser;
+    use HasFactory, SoftDeletes, AssociatedToUser;
 
     /**
      * The attributes that are mass assignable.
@@ -20,11 +21,10 @@ class Leave extends Model
     protected $fillable = [
         'employee_id',
         'user_id',
-        'leave_type',
+        'leave_request_id',
         'start_date',
         'end_date',
         'status',
-        'reason',
     ];
 
     /**
@@ -35,6 +35,7 @@ class Leave extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'status' => LeaveStatus::class
     ];
 
     /**
@@ -48,22 +49,12 @@ class Leave extends Model
     }
 
     /**
-     * Get the leave request associated with this leave.
+     * Get the leaveRequest that owns the Leave
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function leaveRequest()
+    public function leaveRequest(): BelongsTo
     {
-        return $this->hasOne(LeaveRequest::class);
-    }
-
-    /**
-     * Check if the leave is approved.
-     *
-     * @return bool
-     */
-    public function isApproved(): bool
-    {
-        return $this->status === LeaveStatus::APPROVED;
+        return $this->belongsTo(LeaveRequest::class);
     }
 }

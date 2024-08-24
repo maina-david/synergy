@@ -22,11 +22,15 @@ class Department extends Model
     protected $fillable = [
         'organization_id',
         'user_id',
-        'name',
         'parent_id',
+        'name',
         'description',
+        'active'
     ];
 
+    protected $casts = [
+        'active' => 'boolean'
+    ];
     /**
      * Get the organization that owns the department
      *

@@ -2,6 +2,7 @@
 
 namespace App\Services\DocumentManagement;
 
+use App\Models\Administration\Organization;
 use App\Models\DocumentManagement\File;
 use App\Models\DocumentManagement\Folder;
 use Illuminate\Http\UploadedFile;
@@ -15,36 +16,45 @@ class FileUploadService
 {
     /**
      * Create or update a folder if it exists.
-     *
+     * @param Organization|null $organization
      * @param  string $folderName
      * @param  Folder|null $parentFolder
      * @return \App\Models\DocumentManagement\Folder
      */
-    protected function createOrUpdateFolder(string $folderName, ?Folder $parentFolder = null): Folder
+    public function createOrUpdateFolder(?Organization $organization = null, string $folderName, ?Folder $parentFolder = null): Folder
     {
+        $attributes = [
+            'name' => $folderName,
+            'parent_id' => $parentFolder?->id,
+        ];
+
+        if ($organization) {
+            $attributes['organization_id'] = $organization->id;
+        }
+
         return Folder::updateOrCreate(
-            [
-                'name' => $folderName,
-                'parent_id' => $parentFolder?->id,
-            ]
+            $attributes,
+            $attributes
         );
     }
+
 
     /**
      * Upload a file and store its metadata.
      * If no folder is provided, the file is stored in the organization's root directory.
      *
      * @param  \Illuminate\Http\UploadedFile $file
+     * @param Organization|null $organization
      * @param  Folder|null $folder
      * @param  string|null $description
      * @return \App\Models\DocumentManagement\File
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function uploadFile(UploadedFile $file, ?Folder $folder = null, ?string $description = null): File
+    public function uploadFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null, ?string $description = null): File
     {
         $this->validateFile($file);
 
-        $filePath = $this->storeFile($file, $folder);
+        $filePath = $this->storeFile($file, $organization, $folder);
 
         return $this->createFileRecord($file, $folder, $filePath, $description);
     }
@@ -73,30 +83,34 @@ class FileUploadService
      * Store the file in the specified folder or organization's root directory.
      *
      * @param  \Illuminate\Http\UploadedFile $file
+     * @param Organization|null $organization
      * @param  Folder|null $folder
      * @return string
      */
-    protected function storeFile(UploadedFile $file, ?Folder $folder = null): string
+    protected function storeFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null): string
     {
         $user = Auth::user();
-        $organizationId = $user && $user->organization_id ? $user->organization_id : null;
+        $organizationId = $organization?->id ?? $user?->organization_id;
 
-        $folderPath = $folder && $folder->id ? "folders/{$folder->id}" : 'files';
+        $basePath = 'files';
 
         if ($organizationId) {
-            $folderPath = $folder
-                ? "organizations/{$organizationId}/{$folderPath}"
-                : "organizations/{$organizationId}/files";
+            $basePath = "organizations/{$organizationId}/{$basePath}";
+        }
+
+        if ($folder && $folder->id) {
+            $basePath = "{$basePath}/folders/{$folder->id}";
         }
 
         $disk = Storage::disk('public');
 
-        if (!$disk->exists($folderPath)) {
-            $disk->makeDirectory($folderPath);
+        if (!$disk->exists($basePath)) {
+            $disk->makeDirectory($basePath);
         }
 
-        return $file->store($folderPath, 'public');
+        return $file->store($basePath, 'public');
     }
+
 
     /**
      * Create a file record and save it to the database.
@@ -164,7 +178,7 @@ class FileUploadService
         $newPath = $this->storeFileAs($file, $newFolder);
 
         $file->file_path = $newPath;
-        $file->folder_id = $newFolder->id; 
+        $file->folder_id = $newFolder->id;
         $file->save();
 
         return $file;

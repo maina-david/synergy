@@ -2,10 +2,11 @@
 
 namespace App\Models\HRM;
 
-use App\Enums\HRM\LeaveStatus;
+use App\Enums\HRM\LeaveRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LeaveRequest extends Model
 {
@@ -18,10 +19,9 @@ class LeaveRequest extends Model
      */
     protected $fillable = [
         'employee_id',
-        'leave_id',
+        'leave_type_id',
         'request_date',
         'status',
-        'comments',
     ];
 
     /**
@@ -31,6 +31,7 @@ class LeaveRequest extends Model
      */
     protected $casts = [
         'request_date' => 'date',
+        'status' => LeaveRequestStatus::class
     ];
 
     /**
@@ -44,13 +45,23 @@ class LeaveRequest extends Model
     }
 
     /**
-     * Get the leave associated with the leave request.
+     * Get the leave type associated with the leave request.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function leave(): BelongsTo
+    public function leaveType(): BelongsTo
     {
-        return $this->belongsTo(Leave::class);
+        return $this->belongsTo(LeaveType::class);
+    }
+
+    /**
+     * Get all of the comments for the LeaveRequest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(LeaveRequestComment::class);
     }
 
     /**
@@ -60,6 +71,6 @@ class LeaveRequest extends Model
      */
     public function isApproved(): bool
     {
-        return $this->status === LeaveStatus::APPROVED;
+        return $this->status === LeaveRequestStatus::APPROVED;
     }
 }

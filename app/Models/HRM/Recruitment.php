@@ -2,6 +2,7 @@
 
 namespace App\Models\HRM;
 
+use App\Enums\HRM\RecruitmentStatus;
 use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Recruitment extends Model
 {
@@ -22,6 +24,14 @@ class Recruitment extends Model
         'requirements',
         'post_date',
         'application_deadline',
+        'status',
+        'salary_range',
+    ];
+
+    protected $casts = [
+        'post_date' => 'date',
+        'application_deadline' => 'date',
+        'status' => RecruitmentStatus::class,
     ];
 
     /**
@@ -42,5 +52,35 @@ class Recruitment extends Model
     public function applicants(): HasMany
     {
         return $this->hasMany(Applicant::class);
+    }
+
+    /**
+     * Accessor for formatted post date.
+     *
+     * @return string
+     */
+    public function getFormattedPostDateAttribute(): string
+    {
+        return $this->post_date->format('F j, Y');
+    }
+
+    /**
+     * Accessor for formatted application deadline.
+     *
+     * @return string
+     */
+    public function getFormattedApplicationDeadlineAttribute(): string
+    {
+        return $this->application_deadline->format('F j, Y');
+    }
+
+    /**
+     * Check if the application deadline has passed.
+     *
+     * @return bool
+     */
+    public function isDeadlinePassed(): bool
+    {
+        return Carbon::now()->greaterThan($this->application_deadline);
     }
 }

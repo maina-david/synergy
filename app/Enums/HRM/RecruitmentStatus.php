@@ -2,24 +2,24 @@
 
 namespace App\Enums\HRM;
 
-enum LeaveStatus: string
+enum RecruitmentStatus: string
 {
-    case UPCOMING = 'upcoming';
-    case ONGOING = 'ongoing';
-    case COMPLETED = 'completed';
+    case OPEN = 'open';
+    case CLOSED = 'closed';
+    case ON_HOLD = 'on_hold';
     case CANCELLED = 'cancelled';
 
     /**
-     * Get all the possible statuses.
+     * Get all possible statuses.
      *
      * @return array
      */
     public static function getAllStatuses(): array
     {
         return [
-            self::UPCOMING->value,
-            self::ONGOING->value,
-            self::COMPLETED->value,
+            self::OPEN->value,
+            self::CLOSED->value,
+            self::ON_HOLD->value,
             self::CANCELLED->value,
         ];
     }
@@ -32,9 +32,9 @@ enum LeaveStatus: string
     public function getLabel(): string
     {
         return match ($this) {
-            self::UPCOMING => 'Upcoming',
-            self::ONGOING => 'Ongoing',
-            self::COMPLETED => 'Completed',
+            self::OPEN => 'Open',
+            self::CLOSED => 'Closed',
+            self::ON_HOLD => 'On Hold',
             self::CANCELLED => 'Cancelled',
         };
     }

@@ -2,16 +2,20 @@
 
 namespace App\Models\HRM;
 
+use App\Enums\HRM\Employees\EmployeeStatus;
+use App\Enums\HRM\Employees\EmployeeType;
 use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
+use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
-    use HasFactory, BelongsToOrganization;
+    use HasFactory, SoftDeletes, BelongsToOrganization, AssociatedToUser;
 
     /**
      * The attributes that are mass assignable.
@@ -20,16 +24,21 @@ class Employee extends Model
      */
     protected $fillable = [
         'organization_id',
+        'department_id',
         'user_id',
+        'reports_to',
+        'honorific',
         'first_name',
+        'middle_name',
         'last_name',
         'email',
         'phone',
+        'alternative_phone',
         'address',
         'job_title',
-        'department_id',
         'hire_date',
         'salary',
+        'type',
         'status',
     ];
 
@@ -41,6 +50,8 @@ class Employee extends Model
     protected $casts = [
         'hire_date' => 'date',
         'salary' => 'float',
+        'type' => EmployeeType::class,
+        'status' => EmployeeStatus::class
     ];
 
     /**
@@ -64,14 +75,25 @@ class Employee extends Model
     }
 
     /**
-     * Get the employment status (e.g., active, terminated, etc.).
+     * Get the Employee's supervisor
      *
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getStatusAttribute(): string
+    public function supervisor(): BelongsTo
     {
-        return ucfirst($this->attributes['status']);
+        return $this->belongsTo(Employee::class, 'reports_to');
     }
+
+    /**
+     * Get all of the subordinates for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subordinates(): HasMany
+    {
+        return $this->hasMany(Employee::class, 'reports_to');
+    }
+
 
     /**
      * Get the full name of the employee.
@@ -94,23 +116,22 @@ class Employee extends Model
     }
 
     /**
+     * Get all leaves made by the employee.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function leaves(): HasMany
+    {
+        return $this->hasMany(Leave::class);
+    }
+
+    /**
      * Determine if the employee is currently active.
      *
      * @return bool
      */
     public function isActive(): bool
     {
-        return $this->status === 'active';
-    }
-
-    /**
-     * Determine if the employee has a salary greater than a specific amount.
-     *
-     * @param float $amount
-     * @return bool
-     */
-    public function hasSalaryGreaterThan(float $amount): bool
-    {
-        return $this->salary > $amount;
+        return $this->status === EmployeeStatus::ACTIVE;
     }
 }

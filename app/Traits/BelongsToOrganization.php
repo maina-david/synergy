@@ -18,8 +18,8 @@ trait BelongsToOrganization
     public static function bootBelongsToOrganization()
     {
         static::creating(function ($model) {
-            if (Auth::user()) {
-                $model->organization_id = Auth::user()->organization_id ?? null;
+            if (Auth::check() && empty($model->organization_id)) {
+                $model->organization_id = Auth::user()->organization_id;
             }
         });
 
@@ -27,7 +27,7 @@ trait BelongsToOrganization
             static::addGlobalScope(new class implements Scope {
                 public function apply(Builder $builder, Model $model)
                 {
-                    if (Auth::user()) {
+                    if (Auth::check()) {
                         $organizationId = Auth::user()->organization_id;
                         if ($organizationId) {
                             $builder->where('organization_id', $organizationId);

@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attendances', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->date('date');
+            $table->string('status');
+            $table->timestamp('clock_in_time')->nullable();
+            $table->timestamp('clock_out_time')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employee_files', function (Blueprint $table) {
+        Schema::create('leave_request_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('employee_id')
-                ->constrained('employees', 'id')
+            $table->foreignUuid('leave_request_id')
+                ->constrained('leave_requests', 'id')
                 ->onDelete('cascade');
             $table->foreignUuid('user_id')
                 ->constrained('users', 'id')
                 ->onDelete('cascade');
-            $table->foreignUuid('file_id')
-                ->constrained('files', 'id')
-                ->onDelete('cascade');
+            $table->longText('comment');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employee_files');
+        Schema::dropIfExists('leave_request_comments');
     }
 };
