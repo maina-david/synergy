@@ -56,7 +56,7 @@ export default function Welcome({ exchangeRates }: any) {
         <>
             <Head title="Welcome" />
             <div className="min-h-screen flex flex-col items-center bg-gray-50">
-                {/* Enhanced Header */}
+                {/* Header */}
                 <motion.header
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
