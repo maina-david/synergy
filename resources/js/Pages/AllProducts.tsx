@@ -8,7 +8,7 @@ import { IoIosArrowForward } from "react-icons/io";
 
 export default function AllProducts() {
     const { moduleCategories } = usePage<PageProps>().props;
-    const [activeCategory, setActiveCategory] = useState<string | null>(null);
+    const [activeCategory, setActiveCategory] = useState<string | null>(moduleCategories.length > 0 ? moduleCategories[0].id : null);
     const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
     useEffect(() => {
