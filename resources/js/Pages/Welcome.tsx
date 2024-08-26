@@ -165,7 +165,7 @@ export default function Welcome({ exchangeRates }: any) {
                                                         {selectedCurrency} {calculatePrice(module.price).toFixed(2)} / {capitalizeFirstLetter(selectedTab)}
                                                     </span>
                                                     <Button className="px-4 py-2 rounded-lg transition-all duration-300">
-                                                        <Link href={module.url}>Learn More</Link>
+                                                        <Link href={module.url}>Explore</Link>
                                                     </Button>
                                                 </div>
                                             </div>

@@ -3,7 +3,6 @@ import { Img } from 'react-image';
 import { Link } from '@inertiajs/react';
 import { Search } from 'lucide-react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import {
     DropdownMenu,
@@ -92,7 +91,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                 )}
             </header>
 
-            <main className="flex-1 p-4 sm:px-6 sm:py-0 md:gap-8">
+            <main className="flex-1">
                 {children}
             </main>
 
