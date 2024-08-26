@@ -117,8 +117,8 @@ class ModuleSeeder extends Seeder
                 ],
             ],
             [
-                'name' => 'Support and Documentation',
-                'slug' => 'support-documentation',
+                'name' => 'Support and Documents',
+                'slug' => 'support-documents',
                 'description' => 'Modules for customer support and document management.',
                 'modules' => [
                     [
