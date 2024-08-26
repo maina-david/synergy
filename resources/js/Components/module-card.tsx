@@ -7,9 +7,13 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from '@/Components/ui/context-menu'
-import { ModuleType } from '@/types/module'
-import { Link } from '@inertiajs/react'
+import { ModuleType } from '@/types/index'
+import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
+import { IoMdCart, IoIosClose } from 'react-icons/io'
+import { useState } from 'react'
+import { Link, useForm } from '@inertiajs/react'
+import { FaSpinner } from 'react-icons/fa'
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
     module: ModuleType
@@ -26,6 +30,29 @@ export function ModuleCard({
     className,
     ...props
 }: ModuleProps) {
+    const [loading, setLoading] = useState(false)
+
+    const { post, processing, reset } = useForm({
+        _method: 'POST'
+    });
+
+    const handleUnsubscribe = async (moduleId: string) => {
+        setLoading(true);
+        post(route('module.unsubscribe', { module: moduleId }), {
+            onFinish: () => {
+                setLoading(false)
+                reset();
+            },
+            onError: () => {
+                setLoading(false);
+            }
+        });
+    };
+
+    const handleAddToCart = (moduleId: string) => {
+        console.log(`Module ${moduleId} added to cart`);
+    };
+
     return (
         <div className={cn('space-y-3', className)} {...props}>
             <ContextMenu>
@@ -57,18 +84,6 @@ export function ModuleCard({
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem>
-                        {module.is_subscribed ? (
-                            <Link preserveScroll method="post" href={route('module.unsubscribe', { module: module.id })} as="button">
-                                Unsubscribe
-                            </Link>
-                        ) : (
-                                <Link preserveScroll method="post" href={route('module.subscribe', { module: module.id })} as="button">
-                                Subscribe Now
-                            </Link>
-                        )}
-                    </ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem>
                         <Link href="#">
                             Share
                         </Link>
@@ -92,7 +107,33 @@ export function ModuleCard({
                     />
                     <span className="text-sm capitalize">{module.subscription_type}</span>
                 </div>
-                <p className="text-sm font-semibold">Price: ${module.price.toFixed(2)}</p>
+                <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold">Price: ${module.price.toFixed(2)}</p>
+                    {module.is_subscribed ? (
+                        <Button
+                            onClick={() => handleUnsubscribe(module.id)}
+                            disabled={loading || processing}
+                            className="flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
+                        >
+                            {loading || processing ? (
+                                <FaSpinner className='animate-spin mr-2' />
+                            ) : (
+                                <>
+                                    <IoIosClose className="h-4 w-4 mr-2" />
+                                    Unsubscribe
+                                </>
+                            )}
+                        </Button>
+                    ) : (
+                        <Button
+                            className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
+                            onClick={() => handleAddToCart(module.id)}
+                        >
+                            <IoMdCart className="h-4 w-4 mr-2" />
+                            Add to Cart
+                        </Button>
+                    )}
+                </div>
             </div>
         </div>
     )
