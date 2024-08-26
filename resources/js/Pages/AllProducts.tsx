@@ -59,7 +59,7 @@ export default function AllProducts() {
         <>
             <Head title="Explore All Products" />
             <div className="flex">
-                <aside className="w-64 bg-gray-100 p-6 sticky top-0 h-screen">
+                <aside className="hidden md:block w-64 bg-gray-100 p-6 sticky top-0 h-screen">
                     <h3 className="text-xl font-semibold mb-4">Featured Apps</h3>
                     <nav>
                         <motion.ul

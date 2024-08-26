@@ -34,3 +34,11 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     modules: ModuleType[];
     appName: string;
 };
+
+export type CartItem = {
+    id: string
+    name: string
+    quantity: number
+    price: number
+    type: string
+}

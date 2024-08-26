@@ -17,6 +17,8 @@ import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { Toaster } from '@/Components/ui/sonner';
 import { toast } from "sonner"
+import CartDropdown from '@/Components/Cart';
+
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const { auth } = usePage<PageProps>().props;
@@ -53,35 +55,38 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     />
                 </div>
                 {auth.user ? (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="overflow-hidden rounded-full"
-                            >
-                                <Img
-                                    src="/images/placeholder-user.webp"
-                                    width={36}
-                                    height={36}
-                                    alt="Avatar"
+                    <>
+                        <CartDropdown />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
                                     className="overflow-hidden rounded-full"
-                                />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Support</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                                <Link method="post" href={route('logout')} as="button">
-                                    Logout
-                                </Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                >
+                                    <Img
+                                        src="/images/placeholder-user.webp"
+                                        width={36}
+                                        height={36}
+                                        alt="Avatar"
+                                        className="overflow-hidden rounded-full"
+                                    />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>Settings</DropdownMenuItem>
+                                <DropdownMenuItem>Support</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                    <Link method="post" href={route('logout')} as="button">
+                                        Logout
+                                    </Link>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </>
                 ) : (
                     <div className="flex items-center gap-4">
                         <Link href="/login">
