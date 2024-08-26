@@ -3,11 +3,20 @@ import { Link, Head, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/Components/ui/button';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select"
 
-export default function Welcome() {
+export default function Welcome({ exchangeRates }: any) {
     const { auth, appName, moduleCategories } = usePage<PageProps>().props;
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [selectedTab, setSelectedTab] = useState<string>('monthly');
+    const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
 
     useEffect(() => {
         setCurrentYear(new Date().getFullYear());
@@ -33,7 +42,8 @@ export default function Welcome() {
                 multiplier = 1;
                 break;
         }
-        return basePrice * multiplier;
+        const priceInUSD = basePrice * multiplier;
+        return priceInUSD * exchangeRates[selectedCurrency];
     };
 
     const capitalizeFirstLetter = (word: string) => {
@@ -59,9 +69,31 @@ export default function Welcome() {
                     </Link>
                 </header>
 
-                {/* Pricing Tabs */}
+                {/* Currency and Pricing Tabs */}
                 <main className="w-full max-w-7xl px-6">
-                    <div className="m-8">
+                    <div className="m-8 flex flex-col items-center">
+                        {/* Currency Selector */}
+                        <div className="mb-6">
+                            <Select onValueChange={setSelectedCurrency} defaultValue={selectedCurrency}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Select Currency" />
+                                </SelectTrigger>
+                                <SelectContent position="popper" sideOffset={5}>
+                                    <SelectGroup>
+                                        {Object.keys(exchangeRates).map((currency) => (
+                                            <SelectItem
+                                                key={currency}
+                                                value={currency}
+                                            >
+                                                {currency}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Pricing Tabs */}
                         <div className="flex justify-center mb-12">
                             {['monthly', 'quarterly', 'biannual', 'annual'].map((tab) => (
                                 <Button
@@ -116,7 +148,7 @@ export default function Welcome() {
                                                 <p className="text-gray-600 mb-4">{module.description}</p>
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-xl font-semibold text-gray-900">
-                                                        ${calculatePrice(module.price).toFixed(2)} / {capitalizeFirstLetter(selectedTab)}
+                                                        {selectedCurrency} {calculatePrice(module.price).toFixed(2)} / {capitalizeFirstLetter(selectedTab)}
                                                     </span>
                                                     <Button className="px-4 py-2 rounded-lg transition duration-300">
                                                         <Link href={module.url}>Learn More</Link>

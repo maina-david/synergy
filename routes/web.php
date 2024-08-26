@@ -5,9 +5,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Users\EnsureUserBelongsToOrganization;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Worksome\Exchange\Facades\Exchange;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    $exchangeRates = Exchange::rates('USD', ['GBP', 'EUR', 'KES']);
+    $baseCurrency = ['USD' => 1];
+    return Inertia::render('Welcome', [
+        'exchangeRates' => array_merge($baseCurrency, $exchangeRates->getRates())
+    ]);
 });
 
 Route::middleware(['auth', 'verified', EnsureUserBelongsToOrganization::class])->group(function () {
