@@ -11,6 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/Components/ui/select"
+import { Separator } from '@/Components/ui/separator';
 
 export default function Welcome({ exchangeRates }: any) {
     const { auth, appName, moduleCategories } = usePage<PageProps>().props;
@@ -161,8 +162,10 @@ export default function Welcome({ exchangeRates }: any) {
                             </section>
                         ))}
 
+                        <Separator />
+
                         {/* Why Choose Us */}
-                        <section className="py-12 bg-gray-200">
+                        <section className="py-12 w-full">
                             <h2 className="text-3xl font-semibold text-gray-800 text-center mb-8">Why Choose Us?</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
                                 {[
@@ -185,10 +188,13 @@ export default function Welcome({ exchangeRates }: any) {
                                 </Link>
                             </div>
                         </section>
+
+                        <Separator />
+                        
                     </div>
                 </main>
 
-                <footer className="bg-gray-800 text-white py-6 w-full text-center">
+                <footer className="py-6 w-full text-center text-bold">
                     <p>&copy; {currentYear} {appName}. All rights reserved.</p>
                 </footer>
             </div>
