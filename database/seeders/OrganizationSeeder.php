@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\Admin\Role as RoleEnum;
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;

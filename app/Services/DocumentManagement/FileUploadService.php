@@ -2,7 +2,7 @@
 
 namespace App\Services\DocumentManagement;
 
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use App\Models\DocumentManagement\File;
 use App\Models\DocumentManagement\Folder;
 use Illuminate\Http\UploadedFile;

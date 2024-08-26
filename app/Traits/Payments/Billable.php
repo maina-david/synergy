@@ -3,7 +3,7 @@
 namespace App\Traits\Payments;
 
 use App\Models\Administration\Module;
-use App\Models\Administration\Subscription;
+use App\Models\Organization\Subscription;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use App\Enums\Billing\Subscription\SubscriptionType;

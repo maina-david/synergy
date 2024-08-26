@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Administration;
+namespace App\Models\Organization;
 
 use App\Enums\Admin\Organization\OrganizationCategory;
 use App\Enums\Admin\Organization\OrganizationType;

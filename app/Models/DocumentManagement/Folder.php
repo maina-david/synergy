@@ -2,7 +2,7 @@
 
 namespace App\Models\DocumentManagement;
 
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

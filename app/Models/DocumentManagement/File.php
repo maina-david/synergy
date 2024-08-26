@@ -2,7 +2,7 @@
 
 namespace App\Models\DocumentManagement;
 
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use App\Models\DocumentManagement\Folder;
 use App\Models\User;
 use App\Traits\BelongsToOrganization;

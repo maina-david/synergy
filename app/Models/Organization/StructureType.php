@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Administration;
+namespace App\Models\Organization;
 
 use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Builder;

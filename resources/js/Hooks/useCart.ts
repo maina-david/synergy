@@ -4,9 +4,9 @@ import { CartItem } from "@/types/index"
 const sampleCartItems: CartItem[] = [
     {
         id: "1",
-        name: "Module A",
-        quantity: 2,
-        price: 29.99,
+        name: "Inventory Management",
+        quantity: 1,
+        price: 34.99,
         type: "Module",
     },
     {

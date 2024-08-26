@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models\Administration;
+namespace App\Models\Organization;
 
 use App\Enums\Billing\Subscription\SubscriptionType;
+use App\Models\Administration\Module;
 use App\Traits\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -13,6 +13,25 @@ import {
 } from "@/Components/ui/select"
 import { Separator } from '@/Components/ui/separator';
 
+const highlights: {
+    icon: string;
+    title: string;
+    description: string;
+}[] = [
+        { icon: '⚙️', title: 'Customization', description: 'Tailor the tools to fit your exact needs.' },
+        { icon: '📈', title: 'Growth Focused', description: 'All the tools you need to grow your business.' },
+        { icon: '🔒', title: 'Secure', description: 'Your data is safe with enterprise-grade security.' },
+    ];
+
+const reasons: {
+    title: string;
+    description: string;
+}[] = [
+        { title: 'All-in-One', description: 'Manage everything in one place.' },
+        { title: 'User Friendly', description: 'Intuitive interface for all skill levels.' },
+        { title: '24/7 Support', description: 'We are here for you, anytime.' },
+    ]
+
 export default function Welcome({ exchangeRates }: any) {
     const { auth, appName, moduleCategories } = usePage<PageProps>().props;
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
@@ -51,6 +70,21 @@ export default function Welcome({ exchangeRates }: any) {
         if (!word) return '';
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     };
+
+    const getPricingLabel = (tab: string) => {
+        switch (tab) {
+            case 'monthly':
+                return 'Month';
+            case 'quarterly':
+                return '3 Months';
+            case 'biannual':
+                return '6 Months';
+            case 'annual':
+                return 'Year';
+            default:
+                return capitalizeFirstLetter(tab);
+        }
+    }
 
     return (
         <>
@@ -119,11 +153,7 @@ export default function Welcome({ exchangeRates }: any) {
 
                         {/* Feature Highlights */}
                         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 text-center">
-                            {[
-                                { icon: '⚙️', title: 'Customization', description: 'Tailor the tools to fit your exact needs.' },
-                                { icon: '📈', title: 'Growth Focused', description: 'All the tools you need to grow your business.' },
-                                { icon: '🔒', title: 'Secure', description: 'Your data is safe with enterprise-grade security.' },
-                            ].map((feature, index) => (
+                            {highlights.map((feature, index) => (
                                 <motion.div
                                     key={index}
                                     initial={{ opacity: 0, y: 50 }}
@@ -162,7 +192,7 @@ export default function Welcome({ exchangeRates }: any) {
                                                 <p className="text-gray-600 mb-4">{module.description}</p>
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-lg font-semibold text-gray-900">
-                                                        {selectedCurrency} {calculatePrice(module.price).toFixed(2)} / {capitalizeFirstLetter(selectedTab)}
+                                                        {selectedCurrency} {calculatePrice(module.price).toFixed(2)} / {getPricingLabel(selectedTab)}
                                                     </span>
                                                     <Button className="px-4 py-2 rounded-lg transition-all duration-300">
                                                         <Link href={module.url}>Explore</Link>
@@ -181,11 +211,7 @@ export default function Welcome({ exchangeRates }: any) {
                         <section className="py-12 w-full">
                             <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 text-center mb-8">Why Choose Us?</h2>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-                                {[
-                                    { title: 'All-in-One', description: 'Manage everything in one place.' },
-                                    { title: 'User Friendly', description: 'Intuitive interface for all skill levels.' },
-                                    { title: '24/7 Support', description: 'We are here for you, anytime.' },
-                                ].map((reason, index) => (
+                                {reasons.map((reason, index) => (
                                     <div key={index} className="flex flex-col items-center bg-white shadow-lg rounded-lg p-6">
                                         <h3 className="text-lg font-semibold text-gray-900 mb-2">{reason.title}</h3>
                                         <p className="text-gray-600">{reason.description}</p>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Setup;
 use App\Enums\Admin\Organization\OrganizationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Setup\StoreOrganizationRequest;
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

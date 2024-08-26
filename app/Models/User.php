@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use App\Traits\BelongsToOrganization;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
