@@ -51,7 +51,15 @@ class CheckoutController extends Controller
     {
         $data = $request->validated();
 
-        $this->cartService->removeItemFromCart($data['item_type'], $data['item_id']);
+        if ($data['item_type'] == 'module') {
+            $data['item_class'] = 'App\Models\Administration\Module';
+        }
+
+        if ($data['item_type'] == 'storage') {
+            $data['item_class'] = 'App\Models\Organization\OrganizationStorageSpace';
+        }
+
+        $this->cartService->removeItemFromCart($data['item_class'], $data['item_id']);
 
         return response()->json(['success' => 'Item removed from cart successfully']);
     }

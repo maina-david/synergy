@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { Link, router } from '@inertiajs/react'
 import { FaSpinner } from 'react-icons/fa'
 import { useQueryClient } from '@tanstack/react-query'
+import { useCart } from '@/Hooks/useCart'
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
     module: ModuleType
@@ -34,7 +35,11 @@ export function ModuleCard({
     const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
     const [processing, setProcessing] = useState<boolean>(false)
     const queryClient = useQueryClient()
-    
+    const { cartItems } = useCart()
+
+    const isInCart = cartItems.some(item => item.id === module.id)
+
+
     const handleUnsubscribe = async (moduleId: string) => {
         setLoadingItemId(moduleId)
         router.visit(route('module.unsubscribe', { module: moduleId }), {
@@ -141,7 +146,7 @@ export function ModuleCard({
                                 </>
                             )}
                         </Button>
-                    ) : (
+                    ) : !isInCart ? ( // Hide or disable button if module is in cart
                         <Button
                             className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
                             onClick={() => handleAddToCart(module.id)}
@@ -155,6 +160,14 @@ export function ModuleCard({
                                     Add to Cart
                                 </>
                             )}
+                        </Button>
+                    ) : (
+                        <Button
+                            className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-300 text-gray-700 cursor-not-allowed"
+                            disabled
+                        >
+                            <IoMdCart className="h-4 w-4 mr-2" />
+                            In Cart
                         </Button>
                     )}
                 </div>

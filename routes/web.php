@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified', EnsureUserBelongsToOrganization::class])-
 
     Route::get('/get-cart-items', [CheckoutController::class, 'getCartItems'])->name('cart.items');
     Route::post('/add-item-to-cart', [CheckoutController::class, 'addItemToCart'])->name('cart.item.add');
-    Route::post('/remove-item-to-cart', [CheckoutController::class, 'removeItemFromCart'])->name('cart.item.remove');
+    Route::post('/remove-item-from-cart', [CheckoutController::class, 'removeItemFromCart'])->name('cart.item.remove');
 });
 
 

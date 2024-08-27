@@ -1,4 +1,4 @@
-import { Button } from "@/Components/ui/button"
+import { Button } from "@/Components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -6,26 +6,44 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/Components/ui/dropdown-menu"
-import { IoMdClose } from "react-icons/io"
-import { useCart } from "@/Hooks/useCart"
-import { CartItem } from "@/types/index"
-import { IoCartOutline, IoCart } from "react-icons/io5"
-import { MdOutlineShoppingCartCheckout } from "react-icons/md"
-import { motion } from "framer-motion"
+} from "@/Components/ui/dropdown-menu";
+import { IoMdClose } from "react-icons/io";
+import { MdOutlineShoppingCartCheckout, MdStorage } from "react-icons/md";
+import { FaCogs, FaTrash } from "react-icons/fa";
+import { IoCartOutline, IoCart } from "react-icons/io5";
+import { motion } from "framer-motion";
+import { useCart } from "@/Hooks/useCart";
+import { useState } from "react";
+import { Trash2Icon } from "lucide-react";
+
+const getItemIcon = (type: string) => {
+    switch (type) {
+        case "module":
+            return <FaCogs className="text-primary h-6 w-6" />;
+        case "storage":
+            return <MdStorage className="text-primary h-6 w-6" />;
+        default:
+            return <IoCart className="text-primary h-6 w-6" />;
+    }
+};
 
 export default function CartDropdown() {
-    const { cartItems, removeItem } = useCart()
-    const itemCount = cartItems.length
+    const { cartItems, removeItem } = useCart();
+    const itemCount = cartItems.length;
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <DropdownMenu>
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="relative flex items-center justify-center p-2">
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="relative flex items-center justify-center p-2"
+                >
                     <motion.div
                         initial={{ scale: 1 }}
                         whileHover={{ scale: 1.1 }}
-                        transition={{ type: 'spring', stiffness: 300 }}
+                        transition={{ type: "spring", stiffness: 300 }}
                     >
                         <IoCart className="h-5 w-5 text-primary" />
                     </motion.div>
@@ -33,7 +51,7 @@ export default function CartDropdown() {
                         <motion.span
                             initial={{ scale: 0.8 }}
                             animate={{ scale: 1 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
+                            transition={{ type: "spring", stiffness: 300 }}
                             className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full -translate-x-1/2 -translate-y-1/2"
                         >
                             {itemCount}
@@ -41,13 +59,23 @@ export default function CartDropdown() {
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-72 p-4 border rounded-lg shadow-lg mr-4">
-                <DropdownMenuLabel className="text-lg font-semibold">Your Cart</DropdownMenuLabel>
+            <DropdownMenuContent className="w-80 p-4 border rounded-lg shadow-lg">
+                <DropdownMenuLabel
+                    className="flex items-center justify-between p-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md"
+                >
+                    <span>Cart</span>
+                    {itemCount > 0 && (
+                        <span className="bg-red-600 text-white px-2 py-1 rounded-full text-sm font-medium">
+                            {itemCount}
+                        </span>
+                    )}
+                </DropdownMenuLabel>
+
                 <DropdownMenuSeparator className="my-2" />
                 {itemCount === 0 ? (
                     <div className="flex flex-col items-center justify-center h-48 text-gray-500">
                         <IoCartOutline className="h-12 w-12 mb-4" />
-                        <DropdownMenuItem className="text-center text-sm">Your cart is empty</DropdownMenuItem>
+                        <p className="text-sm font-semibold">Your cart is empty!</p>
                     </div>
                 ) : (
                     <motion.div
@@ -56,28 +84,34 @@ export default function CartDropdown() {
                         transition={{ duration: 0.3 }}
                         className="flex flex-col space-y-2"
                     >
-                        {cartItems.map((item: CartItem, index) => (
+                        {cartItems.map((item, index) => (
                             <motion.div
                                 key={item.id}
                                 initial={{ x: 20, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                                className="flex items-center justify-between border-b py-2"
                             >
-                                <DropdownMenuItem className="flex items-start justify-between p-3 border-b border-gray-200">
-                                    <div className="flex-1">
-                                        <div className="font-medium text-lg">{item.name}</div>
-                                        <div className="text-sm text-gray-500">Qty: {item.quantity} - ${item.price.toFixed(2)}</div>
+                                <div className="flex items-center space-x-4">
+                                    {getItemIcon(item.type)}
+                                    <div>
+                                        <div className="font-medium">{item.name}</div>
+                                        <div className="text-sm text-gray-500">
+                                            Qty: {item.quantity} - ${item.price.toFixed(2)}
+                                        </div>
                                     </div>
+                                </div>
+                                <div className="flex items-center space-x-2">
                                     <Button
-                                        asChild
                                         variant="outline"
-                                        size="icon"
-                                        className="ml-2 text-red-500 hover:bg-red-100 cursor-pointer"
+                                        size="sm"
+                                        className="text-red-500 hover:bg-red-100"
                                         onClick={() => removeItem(item.id, item.type)}
                                     >
-                                        <IoMdClose className="h-4 w-4" />
+                                        <FaTrash className="h-4 w-4 mr-2" />
+                                        Remove
                                     </Button>
-                                </DropdownMenuItem>
+                                </div>
                             </motion.div>
                         ))}
                     </motion.div>
@@ -85,22 +119,25 @@ export default function CartDropdown() {
                 {itemCount > 0 && (
                     <>
                         <DropdownMenuSeparator className="my-2" />
-                        <DropdownMenuItem className="text-center">
-                            <Button variant="secondary" className="w-full bg-blue-500 text-white hover:bg-blue-600">
+                        <div className="text-center">
+                            <Button
+                                variant="secondary"
+                                className="w-full bg-blue-500 text-white hover:bg-blue-600"
+                            >
                                 <motion.div
                                     initial={{ scale: 1 }}
                                     whileHover={{ scale: 1.1 }}
-                                    transition={{ type: 'spring', stiffness: 300 }}
+                                    transition={{ type: "spring", stiffness: 300 }}
                                     className="flex items-center justify-center"
                                 >
-                                    <MdOutlineShoppingCartCheckout className="h-4 w-4" />
+                                    <MdOutlineShoppingCartCheckout className="h-4 w-4 mr-2" />
+                                    Checkout
                                 </motion.div>
-                                Checkout
                             </Button>
-                        </DropdownMenuItem>
+                        </div>
                     </>
                 )}
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 }

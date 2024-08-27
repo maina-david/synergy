@@ -56,7 +56,12 @@ class CartService
             // Retrieve the organization cart
             $organizationCart = OrganizationCart::where('organization_id', $organizationId)
                 ->where('user_id', Auth::id())
-                ->firstOrFail();
+                ->first();
+
+            // If no cart found, return an empty array
+            if (!$organizationCart) {
+                return [];
+            }
 
             // Determine the item type and retrieve the corresponding model
             $item = $this->resolveItem($itemType, $itemId);
