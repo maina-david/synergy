@@ -12,12 +12,10 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
-    resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.tsx', { eager: true })
-        let page: any = pages[`./Pages/${name}.tsx`]
+    resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, import.meta.glob('./Pages/**/*.tsx')).then((page: any) => {
         page.default.layout = page.default.layout || ((page: ReactNode) => <MainLayout children={page} />)
-        return page
-    },
+        return page;
+    }),
     setup({ el, App, props }) {
         const root = createRoot(el);
 
