@@ -25,7 +25,7 @@ export default function GuestLayout({ children }: PropsWithChildren) {
             <div className="w-full sm:max-w-md mt-6 px-6 py-4 overflow-hidden sm:rounded-lg">
                 {children}
             </div>
-            <Toaster richColors expand={true} position="bottom-right" />
+            <Toaster expand={true} position="bottom-right" />
         </div>
     );
 }

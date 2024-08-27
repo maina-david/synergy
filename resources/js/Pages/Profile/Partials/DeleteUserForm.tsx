@@ -35,16 +35,10 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
 
         destroy(route('profile.destroy'), {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
+            onSuccess: () => setConfirmingUserDeletion(false),
             onError: () => passwordInput.current?.focus(),
             onFinish: () => reset(),
         });
-    };
-
-    const closeModal = () => {
-        setConfirmingUserDeletion(false);
-
-        reset();
     };
 
     return (
@@ -58,7 +52,7 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
                 </p>
             </header>
 
-            <Dialog>
+            <Dialog open={confirmingUserDeletion} onOpenChange={setConfirmingUserDeletion}>
                 <DialogTrigger asChild>
                     <Button variant={'destructive'}>Delete Account</Button>
                 </DialogTrigger>

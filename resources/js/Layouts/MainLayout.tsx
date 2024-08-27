@@ -70,7 +70,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         {children}
                     </main>
 
-                    <Toaster expand={true} richColors position="bottom-right" />
+                    <Toaster expand={true} position="bottom-right" />
                 </div>
             </QueryClientProvider>
     );
