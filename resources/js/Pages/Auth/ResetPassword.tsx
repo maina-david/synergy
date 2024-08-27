@@ -1,9 +1,9 @@
 import { FormEventHandler, ReactNode } from 'react';
 import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import { Label } from '@/Components/ui/label';
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
 import { Head, useForm } from '@inertiajs/react';
 
 const ResetPassword = ({ token, email }: { token: string, email: string }) => {
@@ -28,9 +28,9 @@ const ResetPassword = ({ token, email }: { token: string, email: string }) => {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                    <Label htmlFor="email">Email</Label>
 
-                    <TextInput
+                    <Input
                         id="email"
                         type="email"
                         name="email"
@@ -44,16 +44,15 @@ const ResetPassword = ({ token, email }: { token: string, email: string }) => {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                    <Label htmlFor="password">Password</Label>
 
-                    <TextInput
+                    <Input
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
                         className="mt-1 block w-full"
                         autoComplete="new-password"
-                        isFocused={true}
                         onChange={(e) => setData('password', e.target.value)}
                     />
 
@@ -61,9 +60,9 @@ const ResetPassword = ({ token, email }: { token: string, email: string }) => {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <Label htmlFor="password_confirmation">Confirm Password</Label>
 
-                    <TextInput
+                    <Input
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
@@ -76,9 +75,9 @@ const ResetPassword = ({ token, email }: { token: string, email: string }) => {
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <Button className="ms-4" disabled={processing}>
                         Reset Password
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
         </>
