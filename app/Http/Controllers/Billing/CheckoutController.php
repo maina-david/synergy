@@ -28,17 +28,11 @@ class CheckoutController extends Controller
     {
         $data = $request->validated();
 
-        if ($data['item_type'] == 'module') {
-            $data['item_class'] = 'App\Models\Administration\Module';
-        }
+        $type = ucfirst($data['item_type']);
 
-        if ($data['item_type'] == 'storage') {
-            $data['item_class'] = 'App\Models\Organization\OrganizationStorageSpace';
-        }
+        $this->cartService->addItemToCart($data['item_type'], $data['item_id'], $data['quantity']);
 
-        $this->cartService->addItemToCart($data['item_class'], $data['item_id'], $data['quantity']);
-
-        return redirect()->back()->with('success', 'Item added to cart successfully');
+        return redirect()->back()->with('success', "$type added to cart successfully");
     }
 
     /**
@@ -51,15 +45,7 @@ class CheckoutController extends Controller
     {
         $data = $request->validated();
 
-        if ($data['item_type'] == 'module') {
-            $data['item_class'] = 'App\Models\Administration\Module';
-        }
-
-        if ($data['item_type'] == 'storage') {
-            $data['item_class'] = 'App\Models\Organization\OrganizationStorageSpace';
-        }
-
-        $this->cartService->removeItemFromCart($data['item_class'], $data['item_id']);
+        $this->cartService->removeItemFromCart($data['item_type'], $data['item_id']);
 
         return response()->json(['success' => 'Item removed from cart successfully']);
     }

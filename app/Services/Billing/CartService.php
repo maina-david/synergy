@@ -28,8 +28,16 @@ class CartService
                 'organization_id' => $organizationId,
                 'user_id' => Auth::id(),
             ]);
+            $class = '';
+            if ($itemType == 'module') {
+                $class = 'App\Models\Administration\Module';
+            }
 
-            $item = $this->resolveItem($itemType, $itemId);
+            if ($itemType == 'storage') {
+                $class = 'App\Models\Organization\OrganizationStorageSpace';
+            }
+
+            $item = $this->resolveItem($class, $itemId);
 
             if ($item) {
                 if ($organizationCart->hasItem($item)) {
@@ -63,8 +71,16 @@ class CartService
                 return [];
             }
 
-            // Determine the item type and retrieve the corresponding model
-            $item = $this->resolveItem($itemType, $itemId);
+            $class = '';
+            if ($itemType == 'module') {
+                $class = 'App\Models\Administration\Module';
+            }
+
+            if ($itemType == 'storage') {
+                $class = 'App\Models\Organization\OrganizationStorageSpace';
+            }
+
+            $item = $this->resolveItem($class, $itemId);
 
             if ($item && $organizationCart->hasItem($item)) {
                 $organizationCart->removeItem($item);

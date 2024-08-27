@@ -7,14 +7,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
-import { IoMdClose } from "react-icons/io";
 import { MdOutlineShoppingCartCheckout, MdStorage } from "react-icons/md";
 import { FaCogs, FaTrash } from "react-icons/fa";
 import { IoCartOutline, IoCart } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { useCart } from "@/Hooks/useCart";
 import { useState } from "react";
-import { Trash2Icon } from "lucide-react";
 
 const getItemIcon = (type: string) => {
     switch (type) {
@@ -31,6 +29,8 @@ export default function CartDropdown() {
     const { cartItems, removeItem } = useCart();
     const itemCount = cartItems.length;
     const [isOpen, setIsOpen] = useState(false);
+
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -59,7 +59,7 @@ export default function CartDropdown() {
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-80 p-4 border rounded-lg shadow-lg">
+            <DropdownMenuContent className="w-80 p-4 border rounded-lg shadow-lg bg-white">
                 <DropdownMenuLabel
                     className="flex items-center justify-between p-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md"
                 >
@@ -114,6 +114,10 @@ export default function CartDropdown() {
                                 </div>
                             </motion.div>
                         ))}
+                        <div className="flex justify-between mt-4 font-semibold text-lg">
+                            <span>Subtotal:</span>
+                            <span>${subtotal}</span>
+                        </div>
                     </motion.div>
                 )}
                 {itemCount > 0 && (
