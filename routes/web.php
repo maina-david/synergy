@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Billing\CheckoutController;
 use App\Http\Controllers\Setup\ModuleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Users\EnsureUserBelongsToOrganization;
@@ -28,6 +29,10 @@ Route::middleware(['auth', 'verified', EnsureUserBelongsToOrganization::class])-
             Route::post('/unsubscribe/{module}', 'unSubscribe')->name('module.unsubscribe');
         });
     });
+
+    Route::get('/get-cart-items', [CheckoutController::class, 'getCartItems'])->name('cart.items');
+    Route::post('/add-item-to-cart', [CheckoutController::class, 'addItemToCart'])->name('cart.item.add');
+    Route::post('/remove-item-to-cart', [CheckoutController::class, 'removeItemFromCart'])->name('cart.item.remove');
 });
 
 

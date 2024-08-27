@@ -18,6 +18,15 @@ import { PageProps } from '@/types';
 import { Toaster } from '@/Components/ui/sonner';
 import { toast } from "sonner"
 import CartDropdown from '@/Components/Cart';
+import {
+    useQuery,
+    useMutation,
+    useQueryClient,
+    QueryClient,
+    QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 
 export default function MainLayout({ children }: PropsWithChildren) {
@@ -39,68 +48,70 @@ export default function MainLayout({ children }: PropsWithChildren) {
     }, [flash?.error, flash?.success, toast]);
 
     return (
-        <div className="flex min-h-screen w-full flex-col bg-muted/40">
-            <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-white shadow-md px-4 sm:px-6">
-                <div className="shrink-0 flex items-center">
-                    <Link href="/">
-                        <ApplicationLogo className="block h-9 w-auto fill-primary text-primary" />
-                    </Link>
-                </div>
-                <div className="relative ml-auto flex-1 md:grow-0">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search..."
-                        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                    />
-                </div>
-                {auth.user ? (
-                    <>
-                        <CartDropdown />
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    className="overflow-hidden rounded-full"
-                                >
-                                    <Img
-                                        src="/images/placeholder-user.webp"
-                                        width={36}
-                                        height={36}
-                                        alt="Avatar"
-                                        className="overflow-hidden rounded-full"
-                                    />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Settings</DropdownMenuItem>
-                                <DropdownMenuItem>Support</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <Link method="post" href={route('logout')} as="button">
-                                        Logout
-                                    </Link>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </>
-                ) : (
-                    <div className="flex items-center gap-4">
-                        <Link href="/login">
-                            <Button variant="outline">Login</Button>
+        <QueryClientProvider client={queryClient}>
+            <div className="flex min-h-screen w-full flex-col bg-muted/40">
+                <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-white shadow-md px-4 sm:px-6">
+                    <div className="shrink-0 flex items-center">
+                        <Link href="/">
+                            <ApplicationLogo className="block h-9 w-auto fill-primary text-primary" />
                         </Link>
                     </div>
-                )}
-            </header>
+                    <div className="relative ml-auto flex-1 md:grow-0">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder="Search..."
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+                        />
+                    </div>
+                    {auth.user ? (
+                        <>
+                            <CartDropdown />
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="overflow-hidden rounded-full"
+                                    >
+                                        <Img
+                                            src="/images/placeholder-user.webp"
+                                            width={36}
+                                            height={36}
+                                            alt="Avatar"
+                                            className="overflow-hidden rounded-full"
+                                        />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>Settings</DropdownMenuItem>
+                                    <DropdownMenuItem>Support</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>
+                                        <Link method="post" href={route('logout')} as="button">
+                                            Logout
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </>
+                    ) : (
+                        <div className="flex items-center gap-4">
+                            <Link href="/login">
+                                <Button variant="outline">Login</Button>
+                            </Link>
+                        </div>
+                    )}
+                </header>
 
-            <main className="flex-1">
-                {children}
-            </main>
+                <main className="flex-1">
+                    {children}
+                </main>
 
-            <Toaster expand={true} richColors position="bottom-right" />
-        </div>
+                <Toaster expand={true} richColors position="bottom-right" />
+            </div>
+        </QueryClientProvider>
     );
 }

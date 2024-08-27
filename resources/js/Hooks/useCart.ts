@@ -1,40 +1,39 @@
-import { useState, useEffect } from "react"
-import { CartItem } from "@/types/index"
-
-const sampleCartItems: CartItem[] = [
-    {
-        id: "1",
-        name: "Inventory Management",
-        quantity: 1,
-        price: 34.99,
-        type: "Module",
-    },
-    {
-        id: "2",
-        name: "User Seat",
-        quantity: 1,
-        price: 49.99,
-        type: "Seat",
-    },
-    {
-        id: "3",
-        name: "Extra Storage",
-        quantity: 3,
-        price: 19.99,
-        type: "Storage",
-    },
-]
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
+import { CartItem } from '@/types/index'
 
 export function useCart() {
-    const [cartItems, setCartItems] = useState<CartItem[]>([])
+    const queryClient = useQueryClient()
 
-    useEffect(() => {
-        setCartItems(sampleCartItems)
-    }, [])
+    const fetchCartItems = (): Promise<CartItem[]> =>
+        axios.get('/get-cart-items').then((response) => response.data)
 
-    const removeItem = (id: string) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== id))
+    const { data: cartItems = [], isLoading: loading, isError, error } = useQuery<CartItem[]>({
+        queryKey: ['cartItems'],
+        queryFn: fetchCartItems,
+        initialData: [],
+    })
+
+    const removeItemMutation = useMutation({
+        mutationFn: async ({ id, itemType }: { id: string, itemType: string }) => {
+            await axios.post('/remove-item-from-cart', {
+                item_type: itemType,
+                item_id: id,
+            })
+        },
+        onSuccess: (_, { id, itemType }) => {
+            queryClient.setQueryData<CartItem[]>(['cartItems'], (oldData) =>
+                oldData?.filter(item => item.id !== id || item.type !== itemType)
+            )
+        },
+        onError: () => {
+            console.error('Failed to remove item from cart.')
+        },
+    })
+
+    const removeItem = (id: string, itemType: string) => {
+        removeItemMutation.mutate({ id, itemType })
     }
 
-    return { cartItems, removeItem }
+    return { cartItems, loading, error: isError ? error : null, removeItem }
 }

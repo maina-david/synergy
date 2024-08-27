@@ -2,6 +2,7 @@
 
 namespace App\Models\Administration;
 
+use App\Models\Organization\OrganizationCartItem;
 use App\Models\Organization\Subscription;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +67,18 @@ class Module extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
+    }
+
+    /**
+     * Define a polymorphic one-to-many relationship with the OrganizationCartItem model.
+     *
+     * This method allows retrieving all cart items associated with the current model instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function cartItems(): MorphMany
+    {
+        return $this->morphMany(OrganizationCartItem::class, 'item');
     }
 
     /**

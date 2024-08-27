@@ -10,8 +10,8 @@ import {
 import { IoMdClose } from "react-icons/io"
 import { useCart } from "@/Hooks/useCart"
 import { CartItem } from "@/types/index"
-import { IoCart } from "react-icons/io5";
-import { MdOutlineShoppingCartCheckout } from "react-icons/md";
+import { IoCartOutline, IoCart } from "react-icons/io5"
+import { MdOutlineShoppingCartCheckout } from "react-icons/md"
 import { motion } from "framer-motion"
 
 export default function CartDropdown() {
@@ -45,7 +45,10 @@ export default function CartDropdown() {
                 <DropdownMenuLabel className="text-lg font-semibold">Your Cart</DropdownMenuLabel>
                 <DropdownMenuSeparator className="my-2" />
                 {itemCount === 0 ? (
-                    <DropdownMenuItem className="text-center text-sm text-gray-500">Your cart is empty</DropdownMenuItem>
+                    <div className="flex flex-col items-center justify-center h-48 text-gray-500">
+                        <IoCartOutline className="h-12 w-12 mb-4" />
+                        <DropdownMenuItem className="text-center text-sm">Your cart is empty</DropdownMenuItem>
+                    </div>
                 ) : (
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -70,7 +73,7 @@ export default function CartDropdown() {
                                         variant="outline"
                                         size="icon"
                                         className="ml-2 text-red-500 hover:bg-red-100 cursor-pointer"
-                                        onClick={() => removeItem(item.id)}
+                                        onClick={() => removeItem(item.id, item.type)}
                                     >
                                         <IoMdClose className="h-4 w-4" />
                                     </Button>
@@ -79,20 +82,24 @@ export default function CartDropdown() {
                         ))}
                     </motion.div>
                 )}
-                <DropdownMenuSeparator className="my-2" />
-                <DropdownMenuItem className="text-center">
-                    <Button variant="secondary" className="w-full bg-blue-500 text-white hover:bg-blue-600">
-                        <motion.div
-                            initial={{ scale: 1 }}
-                            whileHover={{ scale: 1.1 }}
-                            transition={{ type: 'spring', stiffness: 300 }}
-                            className="flex items-center justify-center"
-                        >
-                            <MdOutlineShoppingCartCheckout className="h-4 w-4" />
-                        </motion.div>
-                        Checkout
-                    </Button>
-                </DropdownMenuItem>
+                {itemCount > 0 && (
+                    <>
+                        <DropdownMenuSeparator className="my-2" />
+                        <DropdownMenuItem className="text-center">
+                            <Button variant="secondary" className="w-full bg-blue-500 text-white hover:bg-blue-600">
+                                <motion.div
+                                    initial={{ scale: 1 }}
+                                    whileHover={{ scale: 1.1 }}
+                                    transition={{ type: 'spring', stiffness: 300 }}
+                                    className="flex items-center justify-center"
+                                >
+                                    <MdOutlineShoppingCartCheckout className="h-4 w-4" />
+                                </motion.div>
+                                Checkout
+                            </Button>
+                        </DropdownMenuItem>
+                    </>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     )

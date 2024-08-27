@@ -2,7 +2,7 @@
 
 namespace App\Models\Organization;
 
-use App\Models\Administration\Organization;
+use App\Models\Organization\Organization;
 use App\Models\User;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
@@ -59,7 +59,7 @@ class OrganizationCart extends Model
      */
     public function addItem(Model $item, int $quantity = 1)
     {
-        $this->items()->updateOrCreate(
+        $this->cartItems()->updateOrCreate(
             [
                 'item_type' => get_class($item),
                 'item_id' => $item->id,
@@ -76,7 +76,7 @@ class OrganizationCart extends Model
      */
     public function removeItem(Model $item)
     {
-        $this->items()->where('item_type', get_class($item))
+        $this->cartItems()->where('item_type', get_class($item))
             ->where('item_id', $item->id)
             ->delete();
     }
@@ -89,7 +89,7 @@ class OrganizationCart extends Model
      */
     public function hasItem(Model $item)
     {
-        return $this->items()->where('item_type', get_class($item))
+        return $this->cartItems()->where('item_type', get_class($item))
             ->where('item_id', $item->id)
             ->exists();
     }
@@ -101,6 +101,6 @@ class OrganizationCart extends Model
      */
     public function getTotalItems()
     {
-        return $this->items()->sum('quantity');
+        return $this->cartItems()->sum('quantity');
     }
 }

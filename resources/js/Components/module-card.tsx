@@ -12,8 +12,9 @@ import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
 import { IoMdCart, IoIosClose } from 'react-icons/io'
 import { useState } from 'react'
-import { Link, useForm } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { FaSpinner } from 'react-icons/fa'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
     module: ModuleType
@@ -30,28 +31,44 @@ export function ModuleCard({
     className,
     ...props
 }: ModuleProps) {
-    const [loading, setLoading] = useState(false)
-
-    const { post, processing, reset } = useForm({
-        _method: 'POST'
-    });
-
+    const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
+    const [processing, setProcessing] = useState<boolean>(false)
+    const queryClient = useQueryClient()
+    
     const handleUnsubscribe = async (moduleId: string) => {
-        setLoading(true);
-        post(route('module.unsubscribe', { module: moduleId }), {
-            onFinish: () => {
-                setLoading(false)
-                reset();
-            },
+        setLoadingItemId(moduleId)
+        router.visit(route('module.unsubscribe', { module: moduleId }), {
+            method: 'post',
             onError: () => {
-                setLoading(false);
-            }
-        });
-    };
+                setLoadingItemId(null)
+            },
+            onFinish: () => {
+                setLoadingItemId(null)
+            },
+        })
+    }
 
-    const handleAddToCart = (moduleId: string) => {
-        console.log(`Module ${moduleId} added to cart`);
-    };
+    const handleAddToCart = async (moduleId: string) => {
+        setLoadingItemId(moduleId)
+        router.visit('/add-item-to-cart', {
+            method: 'post',
+            data: {
+                item_type: 'module',
+                item_id: moduleId,
+                quantity: 1
+            },
+            replace: false,
+            preserveState: true,
+            preserveScroll: true,
+            onError: () => {
+                setLoadingItemId(null)
+            },
+            onFinish: () => {
+                queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+                setLoadingItemId(null)
+            },
+        })
+    }
 
     return (
         <div className={cn('space-y-3', className)} {...props}>
@@ -84,7 +101,7 @@ export function ModuleCard({
                     </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem>
-                        <Link href="#">
+                        <Link href="/share-module">
                             Share
                         </Link>
                     </ContextMenuItem>
@@ -112,10 +129,10 @@ export function ModuleCard({
                     {module.is_subscribed ? (
                         <Button
                             onClick={() => handleUnsubscribe(module.id)}
-                            disabled={loading || processing}
+                            disabled={loadingItemId === module.id || processing}
                             className="flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
                         >
-                            {loading || processing ? (
+                            {loadingItemId === module.id || processing ? (
                                 <FaSpinner className='animate-spin mr-2' />
                             ) : (
                                 <>
@@ -128,9 +145,16 @@ export function ModuleCard({
                         <Button
                             className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
                             onClick={() => handleAddToCart(module.id)}
+                            disabled={loadingItemId === module.id}
                         >
-                            <IoMdCart className="h-4 w-4 mr-2" />
-                            Add to Cart
+                            {loadingItemId === module.id ? (
+                                <FaSpinner className='animate-spin mr-2' />
+                            ) : (
+                                <>
+                                    <IoMdCart className="h-4 w-4 mr-2" />
+                                    Add to Cart
+                                </>
+                            )}
                         </Button>
                     )}
                 </div>
