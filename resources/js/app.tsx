@@ -4,7 +4,6 @@ import '../css/app.css';
 import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ThemeProvider } from "@/Components/theme-provider"
 import MainLayout from './Layouts/MainLayout';
 import { ReactNode } from 'react';
 
@@ -19,10 +18,7 @@ createInertiaApp({
     setup({ el, App, props }) {
         const root = createRoot(el);
 
-        root.render(
-            <ThemeProvider defaultTheme="light" storageKey="ui-theme">
-                <App {...props} />
-            </ThemeProvider>);
+        root.render(<App {...props} />);
     },
     progress: {
         color: '#4B5563',
