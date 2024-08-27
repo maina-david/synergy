@@ -33,7 +33,6 @@ export function ModuleCard({
     ...props
 }: ModuleProps) {
     const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
-    const [processing, setProcessing] = useState<boolean>(false)
     const queryClient = useQueryClient()
     const { cartItems } = useCart()
 
@@ -134,10 +133,10 @@ export function ModuleCard({
                     {module.is_subscribed ? (
                         <Button
                             onClick={() => handleUnsubscribe(module.id)}
-                            disabled={loadingItemId === module.id || processing}
+                            disabled={loadingItemId === module.id}
                             className="flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
                         >
-                            {loadingItemId === module.id || processing ? (
+                            {loadingItemId === module.id ? (
                                 <FaSpinner className='animate-spin mr-2' />
                             ) : (
                                 <>

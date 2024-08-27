@@ -13,6 +13,7 @@ import { IoCartOutline, IoCart } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { useCart } from "@/Hooks/useCart";
 import { useState } from "react";
+import { FaSpinner } from "react-icons/fa";
 
 const getItemIcon = (type: string) => {
     switch (type) {
@@ -29,8 +30,15 @@ export default function CartDropdown() {
     const { cartItems, removeItem } = useCart();
     const itemCount = cartItems.length;
     const [isOpen, setIsOpen] = useState(false);
+    const [removingItemId, setRemovingItemId] = useState<string | null>(null);
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+
+    const handleRemoveItem = async (id: string, itemType: string) => {
+        setRemovingItemId(id);
+        await removeItem(id, itemType);
+        setRemovingItemId(null);
+    };
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -106,9 +114,12 @@ export default function CartDropdown() {
                                         variant="outline"
                                         size="sm"
                                         className="text-red-500 hover:bg-red-100"
-                                        onClick={() => removeItem(item.id, item.type)}
+                                        onClick={() => handleRemoveItem(item.id, item.type)}
+                                        disabled={removingItemId == item.id}
                                     >
-                                        <FaTrash className="h-4 w-4 mr-2" />
+                                        {removingItemId === item.id ?
+                                            <FaSpinner className="animate-spin h-4 w-4 mr-2" /> : <FaTrash className="h-4 w-4 mr-2" />
+                                        }
                                         Remove
                                     </Button>
                                 </div>
