@@ -21,8 +21,13 @@ export interface CategoryType {
 
 export interface User {
     id: number;
-    name: string;
+    organization_id: number;
+    honorific: string;
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
     email: string;
+    phone: string;
     email_verified_at?: string;
 }
 
