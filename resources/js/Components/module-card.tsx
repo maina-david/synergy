@@ -145,14 +145,14 @@ export function ModuleCard({
                                 </>
                             )}
                         </Button>
-                    ) : !isInCart ? ( // Hide or disable button if module is in cart
+                    ) : !isInCart ? ( 
                         <Button
                             className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
                             onClick={() => handleAddToCart(module.id)}
                             disabled={loadingItemId === module.id}
                         >
                             {loadingItemId === module.id ? (
-                                <FaSpinner className='animate-spin mr-2' />
+                                <><FaSpinner className='animate-spin mr-2' />Adding to Cart</>
                             ) : (
                                 <>
                                     <IoMdCart className="h-4 w-4 mr-2" />

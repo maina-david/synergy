@@ -59,7 +59,7 @@ export default function AllProducts() {
         <>
             <Head title="Explore All Products" />
             <div className="flex">
-                <aside className="hidden md:block w-64 bg-gray-100 p-6 sticky top-0 h-screen">
+                <aside className="hidden md:block bg-gray-100 p-6 sticky top-0 h-screen">
                     <h3 className="text-xl font-semibold mb-4">Featured Apps</h3>
                     <nav>
                         <motion.ul
@@ -74,7 +74,7 @@ export default function AllProducts() {
                                     key={category.id}
                                     className={`relative ${activeCategory === category.id ? 'border-l-2 border-red-500' : ''}`}
                                 >
-                                    <a href={`#category-${category.id}`} className="text-blue-600 hover:underline">
+                                    <a href={`#category-${category.id}`} className={`mr-4 text-gray-600 hover:text-primary ${activeCategory === category.id ? 'text-primary' : ''}`}>
                                         {category.name}
                                     </a>
                                     {activeCategory === category.id && <IoIosArrowForward className="absolute right-0 top-1/2 transform -translate-y-1/2 text-red-500" />}
