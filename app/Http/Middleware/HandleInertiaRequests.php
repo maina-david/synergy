@@ -41,7 +41,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'orgCurrency' => Auth::user()->organization->preferred_currency,
+            'orgCurrency' => Auth::user()?->organization->preferred_currency,
             'exchangeRates' => array_merge($baseCurrencies, $exchangeRates->getRates()),
             'appName' => config('app.name'),
             'flash' => [
