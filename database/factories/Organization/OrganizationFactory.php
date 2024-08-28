@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories\Administration;
+namespace Database\Factories\Organization;
 
 use App\Enums\Admin\Organization\OrganizationCategory;
 use App\Enums\Admin\Organization\OrganizationType;
