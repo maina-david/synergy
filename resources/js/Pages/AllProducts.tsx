@@ -58,8 +58,8 @@ export default function AllProducts() {
     return (
         <>
             <Head title="Explore All Products" />
-            <div className="flex">
-                <aside className="hidden md:block bg-gray-100 p-6 sticky top-0 h-screen">
+            <div className="flex px-10">
+                <aside className="p-6 sticky absolute top-0 h-screen">
                     <h3 className="text-xl font-semibold mb-4">Featured Apps</h3>
                     <nav>
                         <motion.ul
@@ -85,36 +85,38 @@ export default function AllProducts() {
                 </aside>
 
                 <main className="flex-1 p-6">
-                    {moduleCategories.map((category) => (
-                        <div
-                            key={category.id}
-                            id={`category-${category.id}`}
-                            ref={el => sectionRefs.current[category.id] = el}
-                            className="mb-12"
-                        >
-                            <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
-                            <p className="text-gray-600 mb-6">{category.description}</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                                {category.modules.map((module) => (
-                                    <motion.div
-                                        key={module.id}
-                                        initial={{ opacity: 0, scale: 0.5 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.5 }}
-                                        className="w-full"
-                                    >
-                                        <ModuleCard
-                                            module={module}
-                                            aspectRatio="square"
-                                            width={250}
-                                            height={330}
-                                        />
-                                    </motion.div>
-                                ))}
+                    <div className='h-screen'>
+                        {moduleCategories.map((category) => (
+                            <div
+                                key={category.id}
+                                id={`category-${category.id}`}
+                                ref={el => sectionRefs.current[category.id] = el}
+                                className="mb-12"
+                            >
+                                <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
+                                <p className="text-gray-600 mb-6">{category.description}</p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
+                                    {category.modules.map((module) => (
+                                        <motion.div
+                                            key={module.id}
+                                            initial={{ opacity: 0, scale: 0.5 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ duration: 0.5 }}
+                                            className="w-full"
+                                        >
+                                            <ModuleCard
+                                                module={module}
+                                                aspectRatio="square"
+                                                width={250}
+                                                height={330}
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </div>
+                                <Separator className="my-8" />
                             </div>
-                            <Separator className="my-8" />
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </main>
             </div>
         </>
