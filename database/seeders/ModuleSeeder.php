@@ -23,7 +23,7 @@ class ModuleSeeder extends Seeder
                 'modules' => [
                     [
                         'name' => 'CRM',
-                        'description' => 'Manage sales, marketing, and customer support with advanced CRM tools.',
+                        'description' => 'Manage sales, marketing, and customer support.',
                         'url' => '/crm',
                         'banner' => 'https://media.istockphoto.com/id/1471444483/photo/customer-satisfaction-survey-concept-users-rate-service-experiences-on-online-application.webp?b=1&s=612x612&w=0&k=20&c=2Wtg2ur5qT3ZFazgxIJYmkPD1ds8p_IVMmrABjZ4NOM=',
                         'subscription_type' => SubscriptionType::MONTHLY,
@@ -91,7 +91,7 @@ class ModuleSeeder extends Seeder
                 'modules' => [
                     [
                         'name' => 'Project & Task Management',
-                        'description' => 'Efficiently manage projects, tasks, and teams with powerful management features.',
+                        'description' => 'Efficiently manage projects, tasks, and teams.',
                         'url' => '/project-task-management',
                         'banner' => 'https://media.istockphoto.com/id/1714483761/photo/business-management-kanban-training.webp?b=1&s=612x612&w=0&k=20&c=v3d59AZBUUweW5fVEqqA3FmrHcKQ08iexsklDLWiOOQ=',
                         'subscription_type' => SubscriptionType::MONTHLY,
