@@ -100,7 +100,7 @@ class ModuleSeeder extends Seeder
                     ],
                     [
                         'name' => 'Workflow Automation',
-                        'description' => 'Automate and streamline your business processes and workflows.',
+                        'description' => 'Automate and streamline your business processes.',
                         'url' => '/workflow-automation',
                         'banner' => 'https://media.istockphoto.com/id/1415348384/photo/process-analyzing-solution-strategy-process-workflow-proceeding-business.webp?b=1&s=612x612&w=0&k=20&c=F6lMekClFOEmJuNCEWit9MaMzQXDlmfbOkNep1S54mA=',
                         'subscription_type' => SubscriptionType::MONTHLY,
