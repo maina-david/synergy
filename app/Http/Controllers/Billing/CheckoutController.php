@@ -33,7 +33,7 @@ class CheckoutController extends Controller
 
         $this->cartService->addItemToCart($data['item_type'], $data['item_id'], $data['quantity']);
 
-        return redirect()->back()->with('success', "$type added to cart successfully");
+        return response()->json(['success' => "$type added to cart successfully!"]);
     }
 
     /**
@@ -48,7 +48,7 @@ class CheckoutController extends Controller
 
         $this->cartService->removeItemFromCart($data['item_type'], $data['item_id']);
 
-        return response()->json(['success' => 'Item removed from cart successfully']);
+        return response()->json(['success' => 'Item removed from cart successfully!']);
     }
 
     /**

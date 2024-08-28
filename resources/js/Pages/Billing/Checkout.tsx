@@ -2,7 +2,7 @@ import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
 import { useCart } from '@/Hooks/useCart';
 import { CartItem, PageProps } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { motion } from "framer-motion";
 import { useState } from 'react';
 import { FaSpinner, FaTrash } from 'react-icons/fa';
@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     return (
         <>
             <Head title="Checkout" />
-            <div className="flex justify-center min-h-screen bg-gray-100">
+            <div className="flex justify-center items-center min-h-screen bg-gray-100">
                 <Card className="w-full w-1/2 p-6 rounded-lg shadow-lg bg-white">
                     <CardHeader className="flex items-center mb-4 text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md">
                         <HiOutlineShoppingCart className="text-4xl text-white" />
@@ -89,18 +89,26 @@ export default function CheckoutPage() {
                             </div>
                         )}
                     </CardContent>
-                    {cartItems.length > 0 && (
-                        <CardFooter className="flex justify-between items-center p-4 border-t border-gray-200">
-                            <span className="text-lg font-medium">Subtotal: {getFormattedAmount(subtotal)}</span>
-                            <motion.button
-                                className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                Proceed to Payment
-                            </motion.button>
-                        </CardFooter>
-                    )}
+                    <CardFooter className="flex justify-between items-center p-4 border-t border-gray-200">
+                        <Link
+                            href='/all-products'
+                            className="bg-white text-blue-600 px-6 py-3 md:px-8 md:py-4 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300"
+                        >
+                            Explore All Apps
+                        </Link>
+                        {cartItems.length > 0 && (
+                            <>
+                                <span className="text-lg font-medium">Subtotal: {getFormattedAmount(subtotal)}</span>
+                                <motion.button
+                                    className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Proceed to Payment
+                                </motion.button>
+                            </>
+                        )}
+                    </CardFooter>
                 </Card>
             </div>
         </>

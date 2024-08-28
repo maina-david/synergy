@@ -14,6 +14,22 @@ export function useCart() {
         initialData: [],
     })
 
+    const addItemMutation = useMutation({
+        mutationFn: async ({ id, itemType, itemQuantity }: { id: string, itemType: string, itemQuantity: number }) => {
+            await axios.post('/add-item-to-cart', {
+                item_type: itemType,
+                item_id: id,
+                quantity: itemQuantity
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+        },
+        onError: () => {
+            console.error('Failed to add item to cart.')
+        },
+    })
+
     const removeItemMutation = useMutation({
         mutationFn: async ({ id, itemType }: { id: string, itemType: string }) => {
             await axios.post('/remove-item-from-cart', {
@@ -31,9 +47,13 @@ export function useCart() {
         },
     })
 
+    const addItem = (id: string, itemType: string, itemQuantity: number) => {
+        addItemMutation.mutate({ id, itemType, itemQuantity })
+    }
+
     const removeItem = (id: string, itemType: string) => {
         removeItemMutation.mutate({ id, itemType })
     }
 
-    return { cartItems, loading, error: isError ? error : null, removeItem }
+    return { cartItems, loading, error: isError ? error : null, addItem, removeItem }
 }

@@ -39,7 +39,7 @@ export default function CartDropdown() {
 
     const handleRemoveItem = async (id: string, itemType: string) => {
         setRemovingItemId(id);
-        await removeItem(id, itemType);
+        removeItem(id, itemType);
         setRemovingItemId(null);
     };
 

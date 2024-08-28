@@ -34,11 +34,10 @@ export function ModuleCard({
 }: ModuleProps) {
     const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
     const queryClient = useQueryClient()
-    const { cartItems } = useCart()
+    const { cartItems, addItem } = useCart()
     const { orgCurrency, exchangeRates } = usePage<PageProps>().props
 
     const isInCart = cartItems.some(item => item.id === module.id)
-
 
     const handleUnsubscribe = async (moduleId: string) => {
         setLoadingItemId(moduleId)
@@ -55,24 +54,8 @@ export function ModuleCard({
 
     const handleAddToCart = async (moduleId: string) => {
         setLoadingItemId(moduleId)
-        router.visit('/add-item-to-cart', {
-            method: 'post',
-            data: {
-                item_type: 'module',
-                item_id: moduleId,
-                quantity: 1
-            },
-            replace: false,
-            preserveState: true,
-            preserveScroll: true,
-            onError: () => {
-                setLoadingItemId(null)
-            },
-            onFinish: () => {
-                queryClient.invalidateQueries({ queryKey: ['cartItems'] })
-                setLoadingItemId(null)
-            },
-        })
+        addItem(moduleId, 'module', 1);
+        setLoadingItemId(null)
     }
 
     const getFormattedAmount = (amount: number) => {
