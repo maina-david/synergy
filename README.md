@@ -1,6 +1,6 @@
-# Project Synergy
+# Synergy
 
-Project Synergy is a comprehensive web application designed to manage organizational processes through a modular subscription system. By leveraging Laravel, Inertia.js, React, and TypeScript, Project Synergy provides a seamless experience for subscribing to various processes, managing billing cycles, and processing payments.
+Synergy is a comprehensive web application designed to manage organizational processes through a modular subscription system. By leveraging Laravel, Inertia.js, React, and TypeScript, Synergy provides a seamless experience for subscribing to various processes, managing billing cycles, and processing payments.
 
 ## Features
 
@@ -69,8 +69,16 @@ npm install
 
 ### 7. Build Assets
 
+Local development
+
 ```bash
 npm run dev
+```
+
+Production 
+
+```bash
+npm run build
 ```
 
 ### 8. Start the Development Server
