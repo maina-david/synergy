@@ -4,15 +4,13 @@ use App\Http\Controllers\Billing\CheckoutController;
 use App\Http\Controllers\Setup\ModuleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\Users\EnsureUserBelongsToOrganization;
+use App\Models\Administration\ModuleCategory;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Worksome\Exchange\Facades\Exchange;
 
 Route::get('/', function () {
-    $exchangeRates = Exchange::rates('USD', ['GBP', 'EUR', 'KES']);
-    $baseCurrency = ['USD' => 1];
     return Inertia::render('Welcome', [
-        'exchangeRates' => array_merge($baseCurrency, $exchangeRates->getRates())
+        'moduleCategories' => ModuleCategory::with(['modules' => fn($query) => $query->active()])->get(),
     ]);
 });
 
@@ -33,6 +31,7 @@ Route::middleware(['auth', 'verified', EnsureUserBelongsToOrganization::class])-
     Route::get('/get-cart-items', [CheckoutController::class, 'getCartItems'])->name('cart.items');
     Route::post('/add-item-to-cart', [CheckoutController::class, 'addItemToCart'])->name('cart.item.add');
     Route::post('/remove-item-from-cart', [CheckoutController::class, 'removeItemFromCart'])->name('cart.item.remove');
+    Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('cart.checkout');
 });
 
 

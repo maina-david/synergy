@@ -2,10 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\Billing\Payments\SupportedCurrency;
 use App\Models\Administration\Module;
 use App\Models\Administration\ModuleCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
+use Worksome\Exchange\Facades\Exchange;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -31,12 +34,15 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $exchangeRates = Exchange::rates('USD', ['GBP', 'EUR', 'KES']);
+        $baseCurrencies = ['USD' => 1, 'KES' => 130];
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
             ],
-            'moduleCategories' => ModuleCategory::with(['modules' => fn($query) => $query->active()])->get(),
+            'orgCurrency' => Auth::user()->organization->preferred_currency,
+            'exchangeRates' => array_merge($baseCurrencies, $exchangeRates->getRates()),
             'appName' => config('app.name'),
             'flash' => [
                 'status' => fn() => $request->session()->get('status'),

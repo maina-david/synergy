@@ -14,6 +14,8 @@ import { motion } from "framer-motion";
 import { useCart } from "@/Hooks/useCart";
 import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
+import { Link, usePage } from "@inertiajs/react";
+import { PageProps } from "@/types";
 
 const getItemIcon = (type: string) => {
     switch (type) {
@@ -27,18 +29,24 @@ const getItemIcon = (type: string) => {
 };
 
 export default function CartDropdown() {
+    const { orgCurrency, exchangeRates } = usePage<PageProps>().props;
     const { cartItems, removeItem } = useCart();
     const itemCount = cartItems.length;
     const [isOpen, setIsOpen] = useState(false);
     const [removingItemId, setRemovingItemId] = useState<string | null>(null);
 
-    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const handleRemoveItem = async (id: string, itemType: string) => {
         setRemovingItemId(id);
         await removeItem(id, itemType);
         setRemovingItemId(null);
     };
+
+    const getFormattedAmount = (amount: number) => {
+        const formattedAmount = amount * exchangeRates[orgCurrency];
+        return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(formattedAmount);
+    }
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -105,7 +113,7 @@ export default function CartDropdown() {
                                     <div>
                                         <div className="font-medium">{item.name}</div>
                                         <div className="text-sm text-gray-500">
-                                            Qty: {item.quantity} - ${item.price.toFixed(2)}
+                                            Qty: {item.quantity} - {getFormattedAmount(item.price)}
                                         </div>
                                     </div>
                                 </div>
@@ -127,7 +135,7 @@ export default function CartDropdown() {
                         ))}
                         <div className="flex justify-between mt-4 font-semibold text-lg">
                             <span>Subtotal:</span>
-                            <span>${subtotal}</span>
+                            <span>{getFormattedAmount(subtotal)}</span>
                         </div>
                     </motion.div>
                 )}
@@ -135,20 +143,24 @@ export default function CartDropdown() {
                     <>
                         <DropdownMenuSeparator className="my-2" />
                         <div className="text-center">
-                            <Button
-                                variant="secondary"
-                                className="w-full bg-blue-500 text-white hover:bg-blue-600"
-                            >
-                                <motion.div
-                                    initial={{ scale: 1 }}
-                                    whileHover={{ scale: 1.1 }}
-                                    transition={{ type: "spring", stiffness: 300 }}
-                                    className="flex items-center justify-center"
+                            <Link href="/checkout">
+                                <Button
+                                    variant="secondary"
+                                    className="w-full bg-blue-500 text-white hover:bg-blue-600"
+                                    onClick={() => setIsOpen(false)}
                                 >
-                                    <MdOutlineShoppingCartCheckout className="h-4 w-4 mr-2" />
-                                    Checkout
-                                </motion.div>
-                            </Button>
+                                    <motion.div
+                                        initial={{ scale: 1 }}
+                                        whileHover={{ scale: 1.1 }}
+                                        transition={{ type: "spring", stiffness: 300 }}
+                                        className="flex items-center justify-center"
+                                    >
+
+                                        <MdOutlineShoppingCartCheckout className="h-4 w-4 mr-2" />
+                                        Checkout
+                                    </motion.div>
+                                </Button>
+                            </Link>
                         </div>
                     </>
                 )}

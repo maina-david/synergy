@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Setup;
 use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Http\Controllers\Controller;
 use App\Models\Administration\Module;
+use App\Models\Administration\ModuleCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,7 +17,9 @@ class ModuleController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('AllProducts');
+        return Inertia::render('AllProducts', [
+            'moduleCategories' => ModuleCategory::with(['modules' => fn($query) => $query->active()])->get(),
+        ]);
     }
 
     /**

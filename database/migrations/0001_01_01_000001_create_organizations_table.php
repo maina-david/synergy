@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Billing\Payments\SupportedCurrency;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->longText('address')->nullable();
             $table->string('logo')->nullable();
+            $table->string('preferred_currency')->default(SupportedCurrency::USD->value);
             $table->boolean('verified')->default(false);
             $table->boolean('active')->default(false);
             $table->timestamps();

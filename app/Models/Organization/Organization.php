@@ -4,6 +4,7 @@ namespace App\Models\Organization;
 
 use App\Enums\Admin\Organization\OrganizationCategory;
 use App\Enums\Admin\Organization\OrganizationType;
+use App\Enums\Billing\Payments\SupportedCurrency;
 use App\Models\User;
 use App\Traits\Payments\Billable;
 use App\Traits\Users\AssociatedToUser;
@@ -32,6 +33,7 @@ class Organization extends Model
         'website',
         'address',
         'logo',
+        'preferred_currency',
         'verified',
         'active',
     ];
@@ -40,7 +42,8 @@ class Organization extends Model
         'type' => OrganizationType::class,
         'category' => OrganizationCategory::class,
         'verified' => 'boolean',
-        'active' => 'boolean'
+        'active' => 'boolean',
+        'preferred_currency' => SupportedCurrency::class
     ];
 
     /**

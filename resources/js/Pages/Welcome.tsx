@@ -32,8 +32,8 @@ const reasons: {
         { title: '24/7 Support', description: 'We are here for you, anytime.' },
     ]
 
-export default function Welcome({ exchangeRates }: any) {
-    const { auth, appName, moduleCategories } = usePage<PageProps>().props;
+export default function Welcome({ moduleCategories }: PageProps) {
+    const { auth, appName, exchangeRates } = usePage<PageProps>().props;
     const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
     const [selectedTab, setSelectedTab] = useState<string>('monthly');
     const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
@@ -63,7 +63,9 @@ export default function Welcome({ exchangeRates }: any) {
                 break;
         }
         const priceInUSD = basePrice * multiplier;
-        return priceInUSD * exchangeRates[selectedCurrency];
+        const price = priceInUSD * exchangeRates[selectedCurrency];
+        return Intl.NumberFormat(selectedCurrency, { style: "currency", currency: selectedCurrency }).format(price);
+
     };
 
     const capitalizeFirstLetter = (word: string) => {
@@ -192,7 +194,7 @@ export default function Welcome({ exchangeRates }: any) {
                                                 <p className="text-gray-600 mb-4">{module.description}</p>
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-lg font-semibold text-gray-900">
-                                                        {selectedCurrency} {calculatePrice(module.price).toFixed(2)} / {getPricingLabel(selectedTab)}
+                                                        {calculatePrice(module.price)} / {getPricingLabel(selectedTab)}
                                                     </span>
                                                     <Button className="px-4 py-2 rounded-lg transition-all duration-300">
                                                         <Link href={module.url}>Explore</Link>

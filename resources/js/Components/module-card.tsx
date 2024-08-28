@@ -7,12 +7,12 @@ import {
     ContextMenuSeparator,
     ContextMenuTrigger,
 } from '@/Components/ui/context-menu'
-import { ModuleType } from '@/types/index'
+import { ModuleType, PageProps } from '@/types/index'
 import { Button } from '@/Components/ui/button'
 import { Badge } from '@/Components/ui/badge'
 import { IoMdCart, IoIosClose } from 'react-icons/io'
 import { useState } from 'react'
-import { Link, router } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import { FaSpinner } from 'react-icons/fa'
 import { useQueryClient } from '@tanstack/react-query'
 import { useCart } from '@/Hooks/useCart'
@@ -35,6 +35,7 @@ export function ModuleCard({
     const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
     const queryClient = useQueryClient()
     const { cartItems } = useCart()
+    const { orgCurrency, exchangeRates } = usePage<PageProps>().props
 
     const isInCart = cartItems.some(item => item.id === module.id)
 
@@ -72,6 +73,11 @@ export function ModuleCard({
                 setLoadingItemId(null)
             },
         })
+    }
+
+    const getFormattedAmount = (amount: number) => {
+        const formattedAmount = amount * exchangeRates[orgCurrency];
+        return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(formattedAmount);
     }
 
     return (
@@ -129,7 +135,7 @@ export function ModuleCard({
                     <span className="text-sm capitalize">{module.subscription_type}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold">Price: ${module.price.toFixed(2)}</p>
+                    <p className="text-sm font-semibold">Price: {getFormattedAmount(module.price)}</p>
                     {module.is_subscribed ? (
                         <Button
                             onClick={() => handleUnsubscribe(module.id)}
@@ -145,7 +151,7 @@ export function ModuleCard({
                                 </>
                             )}
                         </Button>
-                    ) : !isInCart ? ( 
+                    ) : !isInCart ? (
                         <Button
                             className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
                             onClick={() => handleAddToCart(module.id)}

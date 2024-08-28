@@ -1,3 +1,16 @@
+export type Organization = {
+    id: string
+    type: string
+    category: string
+    name: string
+    description: string
+    email: string
+    phone: string
+    website: string
+    address: string
+    logo: string
+}
+
 export interface ModuleType {
     id: string,
     name: string,
@@ -35,6 +48,8 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     auth: {
         user: User;
     };
+    exchangeRates: any
+    orgCurrency: string
     moduleCategories: CategoryType[];
     modules: ModuleType[];
     appName: string;
@@ -46,4 +61,10 @@ export type CartItem = {
     quantity: number
     price: number
     type: string
+}
+
+export type Cart = {
+    id: string
+    organization: Organization
+    cartItems: CartItem[]
 }

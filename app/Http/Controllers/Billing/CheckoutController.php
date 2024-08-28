@@ -7,7 +7,8 @@ use App\Http\Requests\Billing\AddItemToCartRequest;
 use App\Http\Requests\Billing\RemoveItemFromCartRequest;
 use App\Services\Billing\CartService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CheckoutController extends Controller
 {
@@ -22,7 +23,7 @@ class CheckoutController extends Controller
      * Add an item to the cart.
      *
      * @param AddItemToCartRequest $request
-     * @return JsonResponse
+     * @return RedirectResponse
      */
     public function addItemToCart(AddItemToCartRequest $request)
     {
@@ -60,5 +61,17 @@ class CheckoutController extends Controller
         $cartItems = $this->cartService->getFormattedCartItems();
 
         return response()->json($cartItems);
+    }
+
+    /**
+     * The `checkout` function in PHP renders the 'Billing/Checkout' template with formatted cart items.
+     *
+     * @return Response
+     */
+    public function checkout(): Response
+    {
+        return Inertia::render('Billing/Checkout', [
+            'cartItems' => $this->cartService->getFormattedCartItems(),
+        ]);
     }
 }
