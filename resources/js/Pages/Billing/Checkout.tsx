@@ -1,3 +1,4 @@
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
 import { useCart } from '@/Hooks/useCart';
@@ -24,8 +25,14 @@ export default function CheckoutPage() {
 
     const handleRemoveItem = async (id: string, itemType: string) => {
         setRemovingItemId(id);
-        await removeItem(id, itemType);
+        removeItem(id, itemType);
         setRemovingItemId(null);
+    };
+
+
+    const capitalizeFirstLetter = (word: string) => {
+        if (!word) return '';
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     };
 
     return (
@@ -56,11 +63,14 @@ export default function CheckoutPage() {
                                             )}
                                             <div>
                                                 <p className="text-lg font-semibold">{item.name}</p>
-                                                <p className="text-gray-600 capitalize">Type: {item.type}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center">
-                                            <span className="text-lg font-medium mr-4">Quantity: {item.quantity}</span>
+                                            <span className="text-lg font-medium mr-4">
+                                                {item.type === 'module' ? (
+                                                    <Badge variant={'outline'} className="text-gray-600"> {capitalizeFirstLetter(item.frequency)} </Badge>
+                                                ) : (<>Quantity: {item.quantity}</>)}
+                                            </span>
                                             <span className="text-lg font-medium mr-4">Price: {getFormattedAmount(item.price)}</span>
                                             <div className="flex items-center space-x-2">
                                                 <Button

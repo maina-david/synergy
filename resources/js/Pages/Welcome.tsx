@@ -49,14 +49,8 @@ export default function Welcome({ moduleCategories }: PageProps) {
     const calculatePrice = (basePrice: number) => {
         let multiplier = 1;
         switch (selectedTab) {
-            case 'quarterly':
-                multiplier = 3;
-                break;
-            case 'biannual':
-                multiplier = 6;
-                break;
             case 'annual':
-                multiplier = 12;
+                multiplier = 10;
                 break;
             default:
                 multiplier = 1;
@@ -77,10 +71,6 @@ export default function Welcome({ moduleCategories }: PageProps) {
         switch (tab) {
             case 'monthly':
                 return 'Month';
-            case 'quarterly':
-                return '3 Months';
-            case 'biannual':
-                return '6 Months';
             case 'annual':
                 return 'Year';
             default:
@@ -139,13 +129,13 @@ export default function Welcome({ moduleCategories }: PageProps) {
 
                         {/* Pricing Tabs */}
                         <div className="flex justify-center mb-12">
-                            {['monthly', 'quarterly', 'biannual', 'annual'].map((tab) => (
+                            {['monthly', 'annual'].map((tab) => (
                                 <Button
                                     key={tab}
                                     className={`px-4 py-2 md:px-6 md:py-3 mx-1 md:mx-2 text-lg font-semibold ${selectedTab === tab
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-white text-gray-700 border'
-                                        } rounded-full transition-all duration-300`}
+                                        } hover:text-white rounded-full transition-all duration-300`}
                                     onClick={() => handleTabChange(tab)}
                                 >
                                     {capitalizeFirstLetter(tab)}

@@ -2,7 +2,6 @@ import { Button } from "@/Components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -16,6 +15,8 @@ import { useState } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { Link, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
+import { cn } from "@/lib/utils";
+import { Badge } from "./ui/badge";
 
 const getItemIcon = (type: string) => {
     switch (type) {
@@ -48,6 +49,23 @@ export default function CartDropdown() {
         return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(formattedAmount);
     }
 
+    const capitalizeFirstLetter = (word: string) => {
+        if (!word) return '';
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    };
+
+
+    const getPricingLabel = (tab: string) => {
+        switch (tab) {
+            case 'monthly':
+                return 'Month';
+            case 'annual':
+                return 'Year';
+            default:
+                return capitalizeFirstLetter(tab);
+        }
+    }
+
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
             <DropdownMenuTrigger asChild>
@@ -75,7 +93,7 @@ export default function CartDropdown() {
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-80 p-4 border rounded-lg shadow-lg bg-white">
+            <DropdownMenuContent className={cn('p-4 border rounded-lg shadow-lg bg-white', itemCount > 0 ? 'w-full' : 'w-80')}>
                 <DropdownMenuLabel
                     className="flex items-center justify-between p-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md"
                 >
@@ -113,7 +131,10 @@ export default function CartDropdown() {
                                     <div>
                                         <div className="font-medium">{item.name}</div>
                                         <div className="text-sm text-gray-500">
-                                            Qty: {item.quantity} - {getFormattedAmount(item.price)}
+                                            {item.type === 'module' ? (
+                                                <Badge variant={'outline'} className="text-gray-600"> {capitalizeFirstLetter(item.frequency)} </Badge>
+                                            ) : (<>Qty: {item.quantity} -</>)}
+                                            {getFormattedAmount(item.price)}
                                         </div>
                                     </div>
                                 </div>

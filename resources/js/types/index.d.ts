@@ -61,6 +61,7 @@ export type CartItem = {
     quantity: number
     price: number
     type: string
+    frequency: string
 }
 
 export type Cart = {

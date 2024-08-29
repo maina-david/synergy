@@ -15,11 +15,12 @@ export function useCart() {
     })
 
     const addItemMutation = useMutation({
-        mutationFn: async ({ id, itemType, itemQuantity }: { id: string, itemType: string, itemQuantity: number }) => {
+        mutationFn: async ({ id, itemType, itemQuantity, frequency }: { id: string, itemType: string, itemQuantity: number, frequency: string }) => {
             await axios.post('/add-item-to-cart', {
                 item_type: itemType,
                 item_id: id,
-                quantity: itemQuantity
+                quantity: itemQuantity,
+                frequency: frequency
             })
         },
         onSuccess: () => {
@@ -47,8 +48,8 @@ export function useCart() {
         },
     })
 
-    const addItem = (id: string, itemType: string, itemQuantity: number) => {
-        addItemMutation.mutate({ id, itemType, itemQuantity })
+    const addItem = (id: string, itemType: string, itemQuantity: number, frequency: string) => {
+        addItemMutation.mutate({ id, itemType, itemQuantity, frequency })
     }
 
     const removeItem = (id: string, itemType: string) => {

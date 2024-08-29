@@ -3,6 +3,7 @@
 namespace App\Services\Billing;
 
 use App\Enums\Billing\Cart\AllowedCartItemTypes;
+use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Models\Administration\Module;
 use App\Models\Organization\OrganizationCart;
 use App\Models\Organization\OrganizationStorageSpace;
@@ -17,11 +18,12 @@ class CartService
      * @param string $itemType
      * @param string $itemId
      * @param int $quantity
+     * @param string $frequency
      * @return void
      */
-    public function addItemToCart(string $itemType, string $itemId, int $quantity): void
+    public function addItemToCart(string $itemType, string $itemId, int $quantity, string $frequency): void
     {
-        DB::transaction(function () use ($itemType, $itemId, $quantity) {
+        DB::transaction(function () use ($itemType, $itemId, $quantity, $frequency) {
             $organizationId = Auth::user()->organization_id;
 
             $organizationCart = OrganizationCart::firstOrCreate([
@@ -43,7 +45,7 @@ class CartService
                 if ($organizationCart->hasItem($item)) {
                     return;
                 } else {
-                    $organizationCart->addItem($item, $quantity);
+                    $organizationCart->addItem($item, $quantity, $frequency);
                 }
             }
         });
@@ -130,8 +132,9 @@ class CartService
                 'id' => $item->id,
                 'name' => $this->getItemName($item),
                 'quantity' => $cartItem->quantity,
-                'price' => $this->getItemPrice($item),
+                'price' => $this->getItemPrice($item, $cartItem->frequency),
                 'type' => $this->getItemType($cartItem->item_type),
+                'frequency' => $cartItem->frequency
             ];
         })->toArray();
 
@@ -155,9 +158,12 @@ class CartService
      * @param mixed $item
      * @return float
      */
-    private function getItemPrice($item): float
+    private function getItemPrice($item, $frequency): float
     {
-        return $item->price ?? 0.0;
+        return match ($frequency) {
+            SubscriptionType::ANNUAL => $item->price * 10,
+            default => $item->price ?? 0.0
+        };
     }
 
     /**

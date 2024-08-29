@@ -14,10 +14,10 @@ import { IoMdCart, IoIosClose } from 'react-icons/io'
 import { useState } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
 import { FaSpinner } from 'react-icons/fa'
-import { useQueryClient } from '@tanstack/react-query'
 import { useCart } from '@/Hooks/useCart'
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
+    frequency: string
     module: ModuleType
     aspectRatio?: 'portrait' | 'square'
     width?: number
@@ -25,6 +25,7 @@ interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function ModuleCard({
+    frequency,
     module,
     aspectRatio = 'portrait',
     width,
@@ -33,7 +34,6 @@ export function ModuleCard({
     ...props
 }: ModuleProps) {
     const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
-    const queryClient = useQueryClient()
     const { cartItems, addItem } = useCart()
     const { orgCurrency, exchangeRates } = usePage<PageProps>().props
 
@@ -54,15 +54,41 @@ export function ModuleCard({
 
     const handleAddToCart = async (moduleId: string) => {
         setLoadingItemId(moduleId)
-        addItem(moduleId, 'module', 1);
+        addItem(moduleId, 'module', 1, frequency);
         setLoadingItemId(null)
     }
 
-    const getFormattedAmount = (amount: number) => {
-        const formattedAmount = amount * exchangeRates[orgCurrency];
-        return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(formattedAmount);
+    const capitalizeFirstLetter = (word: string) => {
+        if (!word) return '';
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    };
+
+    const getPricingLabel = (tab: string) => {
+        switch (tab) {
+            case 'monthly':
+                return 'Month';
+            case 'annual':
+                return 'Year';
+            default:
+                return capitalizeFirstLetter(tab);
+        }
     }
 
+    const getFormattedAmount = (basePrice: number) => {
+        let multiplier = 1;
+        switch (frequency) {
+            case 'annual':
+                multiplier = 10;
+                break;
+            default:
+                multiplier = 1;
+                break;
+        }
+        const priceInUSD = basePrice * multiplier;
+        const price = priceInUSD * exchangeRates[orgCurrency];
+        return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(price);
+
+    };
     return (
         <div className={cn('space-y-3', className)} {...props}>
             <ContextMenu>
@@ -107,18 +133,8 @@ export function ModuleCard({
                     </Link>
                 </h3>
                 <p className="text-xs text-muted-foreground">{module.description}</p>
-                <div className="flex items-center space-x-2">
-                    <Img
-                        src={module.icon}
-                        alt={`${module.name} icon`}
-                        width={24}
-                        height={24}
-                        className="object-contain"
-                    />
-                    <span className="text-sm capitalize">{module.subscription_type}</span>
-                </div>
                 <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold">Price: {getFormattedAmount(module.price)}</p>
+                    <p className="text-sm font-semibold">Price: {getFormattedAmount(module.price)} / {getPricingLabel(frequency)}</p>
                     {module.is_subscribed ? (
                         <Button
                             onClick={() => handleUnsubscribe(module.id)}

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Billing;
 
 use App\Enums\Billing\Cart\AllowedCartItemTypes;
+use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Models\Administration\Module;
 use App\Models\Organization\OrganizationStorageSpace;
 use Illuminate\Foundation\Http\FormRequest;
@@ -45,6 +46,7 @@ class AddItemToCartRequest extends FormRequest
                 },
             ],
             'quantity' => ['required', 'integer'],
+            'frequency' => ['required', 'string', Rule::enum(SubscriptionType::class)],
         ];
     }
 }

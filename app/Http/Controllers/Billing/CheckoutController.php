@@ -31,7 +31,7 @@ class CheckoutController extends Controller
 
         $type = ucfirst($data['item_type']);
 
-        $this->cartService->addItemToCart($data['item_type'], $data['item_id'], $data['quantity']);
+        $this->cartService->addItemToCart($data['item_type'], $data['item_id'], $data['quantity'], $data['frequency']);
 
         return response()->json(['success' => "$type added to cart successfully!"]);
     }

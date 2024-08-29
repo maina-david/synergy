@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $exchangeRates = Exchange::rates('USD', ['GBP', 'EUR', 'KES']);
+        // $exchangeRates = Exchange::rates('USD', ['GBP', 'EUR', 'KES']);
         $baseCurrencies = ['USD' => 1, 'KES' => 130];
         return [
             ...parent::share($request),
@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'orgCurrency' => Auth::user()?->organization->preferred_currency,
-            'exchangeRates' => array_merge($baseCurrencies, $exchangeRates->getRates()),
+            'exchangeRates' => $baseCurrencies,
             'appName' => config('app.name'),
             'flash' => [
                 'status' => fn() => $request->session()->get('status'),

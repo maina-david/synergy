@@ -2,6 +2,7 @@
 
 namespace App\Models\Organization;
 
+use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Models\Organization\Organization;
 use App\Models\User;
 use App\Traits\BelongsToOrganization;
@@ -55,16 +56,20 @@ class OrganizationCart extends Model
      *
      * @param \Illuminate\Database\Eloquent\Model $item
      * @param int $quantity
+     * @param string $frequency
      * @return void
      */
-    public function addItem(Model $item, int $quantity = 1)
+    public function addItem(Model $item, int $quantity = 1, string $frequency)
     {
         $this->cartItems()->updateOrCreate(
             [
                 'item_type' => get_class($item),
                 'item_id' => $item->id,
             ],
-            ['quantity' => $quantity]
+            [
+                'quantity' => $quantity,
+                'frequency' => $frequency
+            ]
         );
     }
 

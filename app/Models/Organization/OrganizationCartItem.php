@@ -2,6 +2,7 @@
 
 namespace App\Models\Organization;
 
+use App\Enums\Billing\Subscription\SubscriptionType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -15,6 +16,11 @@ class OrganizationCartItem extends Model
         'item_type',
         'item_id',
         'quantity',
+        'frequency'
+    ];
+
+    protected $casts = [
+        'frequency' => SubscriptionType::class
     ];
 
     /**
