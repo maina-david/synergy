@@ -191,8 +191,8 @@ export function ModuleCard({
                     )}
                 </div>
                 {frequency === 'annual' && (
-                    <span className="text-sm text-green-600">
-                        Save {getFormattedAmount(module.price).discountAmount}!
+                    <span className="text-sm font-bold text-green-600">
+                        Save {getFormattedAmount(module.price).discountAmount} annually!
                     </span>
                 )}
             </div>

@@ -43,9 +43,7 @@ export default function CartDropdown() {
             removeCartItem(id, itemType);
 
         } catch (error) {
-            console.log('====================================');
             console.log(error);
-            console.log('====================================');
         } finally {
             setRemovingItemId(null);
         }
@@ -88,7 +86,7 @@ export default function CartDropdown() {
                     )}
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className={cn('p-4 border rounded-lg shadow-lg bg-white', itemCount > 0 ? 'w-full' : 'w-80')}>
+            <DropdownMenuContent className='p-4 border rounded-lg shadow-lg bg-white w-80'>
                 <DropdownMenuLabel
                     className="flex items-center justify-between p-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md"
                 >
