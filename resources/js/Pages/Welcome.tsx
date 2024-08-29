@@ -46,20 +46,29 @@ export default function Welcome({ moduleCategories }: PageProps) {
         setSelectedTab(tab);
     };
 
-    const calculatePrice = (basePrice: number) => {
+    const getFormattedAmount = (basePrice: number) => {
         let multiplier = 1;
+        let discount = 0;
+
         switch (selectedTab) {
             case 'annual':
-                multiplier = 10;
+                multiplier = 12;
+                discount = 2;
                 break;
             default:
                 multiplier = 1;
                 break;
         }
-        const priceInUSD = basePrice * multiplier;
-        const price = priceInUSD * exchangeRates[selectedCurrency];
-        return Intl.NumberFormat(selectedCurrency, { style: "currency", currency: selectedCurrency }).format(price);
 
+        const priceInUSD = basePrice * multiplier;
+        const discountedPriceInUSD = priceInUSD - basePrice * discount;
+        const price = discountedPriceInUSD * exchangeRates[selectedCurrency];
+        const formattedPrice = Intl.NumberFormat(selectedCurrency, { style: "currency", currency: selectedCurrency }).format(price);
+
+        return {
+            price: formattedPrice,
+            discountAmount: Intl.NumberFormat(selectedCurrency, { style: "currency", currency: selectedCurrency }).format(basePrice * discount * exchangeRates[selectedCurrency])
+        };
     };
 
     const capitalizeFirstLetter = (word: string) => {
@@ -184,12 +193,17 @@ export default function Welcome({ moduleCategories }: PageProps) {
                                                 <p className="text-gray-600 mb-4">{module.description}</p>
                                                 <div className="flex items-center justify-between">
                                                     <span className="text-lg font-semibold text-gray-900">
-                                                        {calculatePrice(module.price)} / {getPricingLabel(selectedTab)}
+                                                        {getFormattedAmount(module.price).price} / {getPricingLabel(selectedTab)}
                                                     </span>
                                                     <Button className="px-4 py-2 rounded-lg transition-all duration-300">
                                                         <Link href={module.url}>Explore</Link>
                                                     </Button>
                                                 </div>
+                                                {selectedTab === 'annual' && (
+                                                    <span className="text-sm font-bold text-green-600">
+                                                        Save {getFormattedAmount(module.price).discountAmount} annually!
+                                                    </span>
+                                                )}
                                             </div>
                                         </motion.div>
                                     ))}
