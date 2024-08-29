@@ -5,16 +5,18 @@ import { CartItem } from '@/types/index'
 export function useCart() {
     const queryClient = useQueryClient()
 
-    const fetchCartItems = (): Promise<CartItem[]> =>
-        axios.get('/get-cart-items').then((response) => response.data)
+    const fetchCartItems = async (): Promise<CartItem[]> => {
+        const response = await axios.get('/get-cart-items')
+        return response.data
+    }
 
-    const { data: cartItems = [], isLoading: loading, isError, error } = useQuery<CartItem[]>({
+    const { data: cartItems = [], isLoading: cartItemsLoading, isError: isCartItemsError, error: cartItemsError } = useQuery<CartItem[]>({
         queryKey: ['cartItems'],
         queryFn: fetchCartItems,
         initialData: [],
     })
 
-    const addItemMutation = useMutation({
+    const addCartItemMutation = useMutation({
         mutationFn: async ({ id, itemType, itemQuantity, frequency }: { id: string, itemType: string, itemQuantity: number, frequency: string }) => {
             await axios.post('/add-item-to-cart', {
                 item_type: itemType,
@@ -23,38 +25,82 @@ export function useCart() {
                 frequency: frequency
             })
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+        onMutate: async ({ id, itemType, itemQuantity, frequency }) => {
+            await queryClient.cancelQueries({ queryKey: ['cartItems'] })
+
+            const previousCartItems = queryClient.getQueryData<CartItem[]>(['cartItems'])
+
+            queryClient.setQueryData<CartItem[]>(['cartItems'], [
+                ...previousCartItems || [],
+                {
+                    id,
+                    name: 'Loading...',
+                    quantity: itemQuantity,
+                    price: 0,
+                    type: itemType,
+                    frequency: frequency
+                }
+            ])
+
+            return { previousCartItems }
         },
-        onError: () => {
-            console.error('Failed to add item to cart.')
+        onError: (error, newItem, context) => {
+            if (context?.previousCartItems) {
+                queryClient.setQueryData(['cartItems'], context.previousCartItems)
+            }
+            console.error('Failed to add item to cart:', error)
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['cartItems'] })
         },
     })
 
-    const removeItemMutation = useMutation({
+    const removeCartItemMutation = useMutation({
         mutationFn: async ({ id, itemType }: { id: string, itemType: string }) => {
             await axios.post('/remove-item-from-cart', {
                 item_type: itemType,
                 item_id: id,
             })
         },
-        onSuccess: (_, { id, itemType }) => {
-            queryClient.setQueryData<CartItem[]>(['cartItems'], (oldData) =>
-                oldData?.filter(item => item.id !== id || item.type !== itemType)
-            )
+        onMutate: async ({ id, itemType }) => {
+            await queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+
+            const previousCartItems = queryClient.getQueryData<CartItem[]>(['cartItems'])
+
+            queryClient.setQueryData<CartItem[]>(['cartItems'], previousCartItems?.filter(item => item.id !== id || item.type !== itemType))
+
+            return { previousCartItems }
         },
-        onError: () => {
-            console.error('Failed to remove item from cart.')
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['cartItems'] })
+        },
+        onError: (error, { id, itemType }, context) => {
+            if (context?.previousCartItems) {
+                queryClient.setQueryData(['cartItems'], context.previousCartItems)
+            }
+            console.error('Failed to remove item from cart:', error)
         },
     })
 
-    const addItem = (id: string, itemType: string, itemQuantity: number, frequency: string) => {
-        addItemMutation.mutate({ id, itemType, itemQuantity, frequency })
+    const addCartItem = (id: string, itemType: string, itemQuantity: number, frequency: string) => {
+        addCartItemMutation.mutate({ id, itemType, itemQuantity, frequency })
     }
 
-    const removeItem = (id: string, itemType: string) => {
-        removeItemMutation.mutate({ id, itemType })
+    const removeCartItem = (id: string, itemType: string) => {
+        removeCartItemMutation.mutate({ id, itemType })
     }
 
-    return { cartItems, loading, error: isError ? error : null, addItem, removeItem }
+    return {
+        cartItems,
+        cartItemsLoading,
+        cartItemsError: isCartItemsError ? cartItemsError : null,
+        addCartItem,
+        addingCartItem: addCartItemMutation.isPending,
+        addCartItemError: addCartItemMutation.isError,
+        addCartItemSuccess: addCartItemMutation.isSuccess,
+        removeCartItem,
+        removingCartItem: removeCartItemMutation.isPending,
+        removeCartItemError: removeCartItemMutation.isError,
+        removeCartItemSuccess: removeCartItemMutation.isSuccess,
+    }
 }

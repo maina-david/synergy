@@ -32,7 +32,7 @@ class ModuleSeeder extends Seeder
                     ],
                     [
                         'name' => 'Inventory Management',
-                        'description' => 'Track and manage inventory, orders, and suppliers with ease.',
+                        'description' => 'Track and manage inventory, orders, and suppliers.',
                         'url' => '/inventory',
                         'banner' => 'https://media.istockphoto.com/id/527045000/photo/female-manager-working-on-tablet-in-factory.webp?b=1&s=612x612&w=0&k=20&c=aR7fKINePAyHs4X4ISNCet8_rwpdpZq7i6BjtODJXLU=',
                         'subscription_type' => SubscriptionType::MONTHLY,
@@ -41,7 +41,7 @@ class ModuleSeeder extends Seeder
                     ],
                     [
                         'name' => 'Contact Center',
-                        'description' => 'Manage voice, email, and social media communications in one place.',
+                        'description' => 'Manage voice, email, and social media communications.',
                         'url' => '/contact-center',
                         'banner' => 'https://plus.unsplash.com/premium_photo-1661407488345-835fdc71bf06?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                         'subscription_type' => SubscriptionType::MONTHLY,

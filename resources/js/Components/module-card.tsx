@@ -34,7 +34,7 @@ export function ModuleCard({
     ...props
 }: ModuleProps) {
     const [loadingItemId, setLoadingItemId] = useState<string | null>(null)
-    const { cartItems, addItem } = useCart()
+    const { cartItems, addCartItem } = useCart()
     const { orgCurrency, exchangeRates } = usePage<PageProps>().props
 
     const isInCart = cartItems.some(item => item.id === module.id)
@@ -54,7 +54,7 @@ export function ModuleCard({
 
     const handleAddToCart = async (moduleId: string) => {
         setLoadingItemId(moduleId)
-        addItem(moduleId, 'module', 1, frequency);
+        addCartItem(moduleId, 'module', 1, frequency);
         setLoadingItemId(null)
     }
 
@@ -76,19 +76,29 @@ export function ModuleCard({
 
     const getFormattedAmount = (basePrice: number) => {
         let multiplier = 1;
+        let discount = 0;
+
         switch (frequency) {
             case 'annual':
-                multiplier = 10;
+                multiplier = 12;
+                discount = 2;
                 break;
             default:
                 multiplier = 1;
                 break;
         }
-        const priceInUSD = basePrice * multiplier;
-        const price = priceInUSD * exchangeRates[orgCurrency];
-        return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(price);
 
+        const priceInUSD = basePrice * multiplier;
+        const discountedPriceInUSD = priceInUSD - basePrice * discount;
+        const price = discountedPriceInUSD * exchangeRates[orgCurrency];
+        const formattedPrice = Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(price);
+
+        return {
+            price: formattedPrice,
+            discountAmount: Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(basePrice * discount * exchangeRates[orgCurrency])
+        };
     };
+
     return (
         <div className={cn('space-y-3', className)} {...props}>
             <ContextMenu>
@@ -134,9 +144,12 @@ export function ModuleCard({
                 </h3>
                 <p className="text-xs text-muted-foreground">{module.description}</p>
                 <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold">Price: {getFormattedAmount(module.price)} / {getPricingLabel(frequency)}</p>
+                    <p className="text-sm font-semibold">
+                        Price: {getFormattedAmount(module.price).price} / {getPricingLabel(frequency)}
+                    </p>
                     {module.is_subscribed ? (
                         <Button
+                            size={'sm'}
                             onClick={() => handleUnsubscribe(module.id)}
                             disabled={loadingItemId === module.id}
                             className="flex items-center px-3 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
@@ -152,6 +165,7 @@ export function ModuleCard({
                         </Button>
                     ) : !isInCart ? (
                         <Button
+                            size={'sm'}
                             className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors"
                             onClick={() => handleAddToCart(module.id)}
                             disabled={loadingItemId === module.id}
@@ -167,6 +181,7 @@ export function ModuleCard({
                         </Button>
                     ) : (
                         <Button
+                            size={'sm'}
                             className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-300 text-gray-700 cursor-not-allowed"
                             disabled
                         >
@@ -175,6 +190,11 @@ export function ModuleCard({
                         </Button>
                     )}
                 </div>
+                {frequency === 'annual' && (
+                    <span className="text-sm text-green-600">
+                        Save {getFormattedAmount(module.price).discountAmount}!
+                    </span>
+                )}
             </div>
         </div>
     )

@@ -7,12 +7,11 @@ import {
     DropdownMenuTrigger,
 } from "@/Components/ui/dropdown-menu";
 import { MdOutlineShoppingCartCheckout, MdStorage } from "react-icons/md";
-import { FaCogs, FaTrash } from "react-icons/fa";
+import { FaCogs, FaTrash, FaSpinner } from "react-icons/fa";
 import { IoCartOutline, IoCart } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { useCart } from "@/Hooks/useCart";
 import { useState } from "react";
-import { FaSpinner } from "react-icons/fa";
 import { Link, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -31,7 +30,7 @@ const getItemIcon = (type: string) => {
 
 export default function CartDropdown() {
     const { orgCurrency, exchangeRates } = usePage<PageProps>().props;
-    const { cartItems, removeItem } = useCart();
+    const { cartItems, removeCartItem } = useCart();
     const itemCount = cartItems.length;
     const [isOpen, setIsOpen] = useState(false);
     const [removingItemId, setRemovingItemId] = useState<string | null>(null);
@@ -39,32 +38,28 @@ export default function CartDropdown() {
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     const handleRemoveItem = async (id: string, itemType: string) => {
-        setRemovingItemId(id);
-        removeItem(id, itemType);
-        setRemovingItemId(null);
+        try {
+            setRemovingItemId(id);
+            removeCartItem(id, itemType);
+
+        } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
+        } finally {
+            setRemovingItemId(null);
+        }
     };
 
     const getFormattedAmount = (amount: number) => {
         const formattedAmount = amount * exchangeRates[orgCurrency];
         return Intl.NumberFormat(orgCurrency, { style: "currency", currency: orgCurrency }).format(formattedAmount);
-    }
+    };
 
     const capitalizeFirstLetter = (word: string) => {
         if (!word) return '';
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     };
-
-
-    const getPricingLabel = (tab: string) => {
-        switch (tab) {
-            case 'monthly':
-                return 'Month';
-            case 'annual':
-                return 'Year';
-            default:
-                return capitalizeFirstLetter(tab);
-        }
-    }
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from 'react';
 import { IoIosArrowForward } from "react-icons/io";
 import { Button } from '@/Components/ui/button';
+import { ScrollArea } from "@/Components/ui/scroll-area"
 
 export default function AllProducts() {
     const { moduleCategories } = usePage<PageProps>().props;
@@ -86,8 +87,8 @@ export default function AllProducts() {
                     ))}
                 </div>
             </div>
-            <div className="flex px-10">
-                <aside className="hidden md:block p-6 sticky absolute top-0 h-screen">
+            <div className="flex flex-col px-10 relative">
+                <aside className="hidden lg:block p-8 fixed top-20 z-60 h-screen w-1/4">
                     <h3 className="text-xl font-semibold mb-4">Featured Apps</h3>
                     <nav>
                         <motion.ul
@@ -112,8 +113,8 @@ export default function AllProducts() {
                     </nav>
                 </aside>
 
-                <main className="flex-1 p-6">
-                    <div className='h-screen'>
+                <main className="flex-1 p-6 h-screen ml-auto w-3/4">
+                    <div>
                         {moduleCategories.map((category) => (
                             <div
                                 key={category.id}
@@ -123,7 +124,7 @@ export default function AllProducts() {
                             >
                                 <h2 className="text-2xl font-bold mb-4">{category.name}</h2>
                                 <p className="text-gray-600 mb-6">{category.description}</p>
-                                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols- lg:grid-cols-4 gap-6">
                                     {category.modules.map((module) => (
                                         <motion.div
                                             key={module.id}
