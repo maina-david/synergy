@@ -30,23 +30,11 @@ class CartService
                 'organization_id' => $organizationId,
                 'user_id' => Auth::id(),
             ]);
-            $class = '';
-            if ($itemType == 'module') {
-                $class = 'App\Models\Administration\Module';
-            }
 
-            if ($itemType == 'storage') {
-                $class = 'App\Models\Organization\OrganizationStorageSpace';
-            }
+            $item = $this->resolveItem($itemType, $itemId);
 
-            $item = $this->resolveItem($class, $itemId);
-
-            if ($item) {
-                if ($organizationCart->hasItem($item)) {
-                    return;
-                } else {
-                    $organizationCart->addItem($item, $quantity, $frequency);
-                }
+            if ($item && !$organizationCart->hasItem($item)) {
+                $organizationCart->addItem($item, $quantity, $frequency);
             }
         });
     }
@@ -63,29 +51,15 @@ class CartService
         DB::transaction(function () use ($itemType, $itemId) {
             $organizationId = Auth::user()->organization_id;
 
-            // Retrieve the organization cart
             $organizationCart = OrganizationCart::where('organization_id', $organizationId)
                 ->where('user_id', Auth::id())
                 ->first();
 
-            // If no cart found, return an empty array
-            if (!$organizationCart) {
-                return [];
-            }
-
-            $class = '';
-            if ($itemType == 'module') {
-                $class = 'App\Models\Administration\Module';
-            }
-
-            if ($itemType == 'storage') {
-                $class = 'App\Models\Organization\OrganizationStorageSpace';
-            }
-
-            $item = $this->resolveItem($class, $itemId);
-
-            if ($item && $organizationCart->hasItem($item)) {
-                $organizationCart->removeItem($item);
+            if ($organizationCart) {
+                $item = $this->resolveItem($itemType, $itemId);
+                if ($item && $organizationCart->hasItem($item)) {
+                    $organizationCart->removeItem($item);
+                }
             }
         });
     }
@@ -99,13 +73,11 @@ class CartService
      */
     protected function resolveItem(string $itemType, string $itemId)
     {
-        $modelClass = match ($itemType) {
-            'App\Models\Administration\Module' => Module::class,
-            'App\Models\Organization\OrganizationStorageSpace' => OrganizationStorageSpace::class,
+        return match ($itemType) {
+            'module' => Module::find($itemId),
+            'storage' => OrganizationStorageSpace::find($itemId),
             default => null,
         };
-
-        return $modelClass ? $modelClass::find($itemId) : null;
     }
 
     /**
@@ -121,12 +93,11 @@ class CartService
             ->where('user_id', Auth::id())
             ->first();
 
-        // If no cart found, return an empty array
         if (!$organizationCart) {
             return [];
         }
 
-        $formattedItems = $organizationCart->cartItems->map(function ($cartItem) {
+        return $organizationCart->cartItems->map(function ($cartItem) {
             $item = $this->resolveItem($cartItem->item_type, $cartItem->item_id);
             return [
                 'id' => $item->id,
@@ -137,8 +108,6 @@ class CartService
                 'frequency' => $cartItem->frequency
             ];
         })->toArray();
-
-        return $formattedItems;
     }
 
     /**
@@ -156,9 +125,10 @@ class CartService
      * Resolve the item's price.
      *
      * @param mixed $item
+     * @param string $frequency
      * @return float
      */
-    private function getItemPrice($item, $frequency): float
+    private function getItemPrice($item, string $frequency): float
     {
         return match ($frequency) {
             SubscriptionType::ANNUAL => $item->price * 10,
@@ -175,8 +145,8 @@ class CartService
     private function getItemType(string $itemType): AllowedCartItemTypes
     {
         return match ($itemType) {
-            'App\Models\Administration\Module' => AllowedCartItemTypes::MODULE,
-            'App\Models\Organization\OrganizationStorageSpace' => AllowedCartItemTypes::STORAGE,
+            Module::class => AllowedCartItemTypes::MODULE,
+            OrganizationStorageSpace::class => AllowedCartItemTypes::STORAGE,
             default => AllowedCartItemTypes::MODULE,
         };
     }
