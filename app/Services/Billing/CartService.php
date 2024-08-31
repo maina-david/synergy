@@ -7,6 +7,7 @@ use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Models\Administration\Module;
 use App\Models\Organization\OrganizationCart;
 use App\Models\Organization\OrganizationStorageSpace;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -98,7 +99,7 @@ class CartService
         }
 
         return $organizationCart->cartItems->map(function ($cartItem) {
-            $item = $this->resolveItem($cartItem->item_type, $cartItem->item_id);
+            $item = $cartItem->item;
             return [
                 'id' => $item->id,
                 'name' => $this->getItemName($item),
@@ -124,11 +125,11 @@ class CartService
     /**
      * Resolve the item's price.
      *
-     * @param mixed $item
-     * @param string $frequency
+     * @param Model $item
+     * @param SubscriptionType $frequency
      * @return float
      */
-    private function getItemPrice($item, string $frequency): float
+    private function getItemPrice(Model $item, SubscriptionType $frequency): float
     {
         return match ($frequency) {
             SubscriptionType::ANNUAL => $item->price * 10,

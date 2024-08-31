@@ -90,12 +90,7 @@ export default function CartDropdown() {
                 <DropdownMenuLabel
                     className="flex items-center justify-between p-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md"
                 >
-                    <span>Cart</span>
-                    {itemCount > 0 && (
-                        <span className="bg-red-600 text-white px-2 py-1 rounded-full text-sm font-medium">
-                            {itemCount}
-                        </span>
-                    )}
+                    Cart
                 </DropdownMenuLabel>
 
                 <DropdownMenuSeparator className="my-2" />
