@@ -2,7 +2,6 @@
 
 namespace App\Models\HRM;
 
-use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -33,15 +32,6 @@ class Department extends Model
     protected $casts = [
         'active' => 'boolean'
     ];
-    /**
-     * Get the organization that owns the department
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     /**
      * Get the parent department.

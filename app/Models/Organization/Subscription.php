@@ -33,17 +33,6 @@ class Subscription extends Model
         'next_billing_date' => 'datetime',
     ];
 
-
-    /**
-     * Get the organization that owns the Subscription.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
-
     /**
      * Get the module that owns the Subscription
      *

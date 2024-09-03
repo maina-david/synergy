@@ -4,7 +4,6 @@ namespace App\Models\HRM;
 
 use App\Enums\HRM\Employees\EmployeeStatus;
 use App\Enums\HRM\Employees\EmployeeType;
-use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -54,16 +53,6 @@ class Employee extends Model
         'type' => EmployeeType::class,
         'status' => EmployeeStatus::class
     ];
-
-    /**
-     * Get the organization that the employee belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     /**
      * Get the department that the employee belongs to.

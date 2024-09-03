@@ -2,7 +2,6 @@
 
 namespace App\Models\DocumentManagement;
 
-use App\Models\Organization\Organization;
 use App\Traits\BelongsToOrganization;
 use App\Traits\Users\AssociatedToUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -22,16 +21,6 @@ class Folder extends Model
         'name',
         'parent_id'
     ];
-
-    /**
-     * Get the organization that owns the Folder.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     /**
      * Get the parent folder for this Folder.

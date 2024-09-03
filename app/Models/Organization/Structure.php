@@ -30,15 +30,6 @@ class Structure extends Model
         'active' => 'boolean',
     ];
 
-    /**
-     * Get the organization that owns the Structure.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     /**
      * Get the structure type that owns the Structure.

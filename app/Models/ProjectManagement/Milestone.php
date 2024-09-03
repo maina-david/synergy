@@ -21,7 +21,7 @@ class Milestone extends Model
         'due_date',
         'status',
         'assigned_to',
-        'completed_at'   
+        'completed_at'
     ];
 
     /**
@@ -32,7 +32,7 @@ class Milestone extends Model
     protected $casts = [
         'due_date' => 'datetime',
         'status' => MilestoneStatus::class,
-        'completed_at' => 'datetime' // casting for completion date
+        'completed_at' => 'datetime' 
     ];
 
     /**

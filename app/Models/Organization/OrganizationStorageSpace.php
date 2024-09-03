@@ -13,17 +13,12 @@ class OrganizationStorageSpace extends Model
 {
     use BelongsToOrganization, HasUuids;
 
-    protected $fillable = ['organization_id', 'storage_space_id', 'allocated_storage_in_gb', 'used_storage_in_gb'];
-
-    /**
-     * Get the organization that owns the OrganizationStorageSpace
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
+    protected $fillable = [
+        'organization_id',
+        'storage_space_id',
+        'allocated_storage_in_gb',
+        'used_storage_in_gb'
+    ];
 
     /**
      * Get the storageSpace that owns the OrganizationStorageSpace

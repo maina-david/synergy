@@ -5,7 +5,6 @@ namespace App\Models\Billing;
 use App\Enums\Billing\Payments\InvoiceStatus;
 use App\Enums\Billing\Subscription\SubscriptionType;
 use App\Models\Administration\Module;
-use App\Models\Administration\Organization;
 use App\Traits\BelongsToOrganization;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -55,16 +54,6 @@ class Invoice extends Model
     }
 
     /**
-     * Get the organization that owns the Invoice.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
-
-    /**
      * Get the module that owns the Invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -103,7 +92,6 @@ class Invoice extends Model
      */
     public function totalAmount(): float
     {
-        // Placeholder for any potential tax or discount calculations.
         return $this->amount;
     }
 

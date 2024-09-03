@@ -58,16 +58,6 @@ class Project extends Model
     }
 
     /**
-     * Get the organization that owns the Project
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
-
-    /**
      * Get the users assigned to the Project
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -86,18 +76,6 @@ class Project extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
-    }
-
-    /**
-     * Scope a query to only include Projects for Organization.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param Organization $organization
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeForOrganization(Builder $query, Organization $organization): Builder
-    {
-        return $query->whereRelation('organization', 'id', $organization->id);
     }
 
     /**

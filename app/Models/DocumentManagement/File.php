@@ -2,7 +2,6 @@
 
 namespace App\Models\DocumentManagement;
 
-use App\Models\Organization\Organization;
 use App\Models\DocumentManagement\Folder;
 use App\Models\User;
 use App\Traits\BelongsToOrganization;
@@ -36,16 +35,6 @@ class File extends Model
     protected $casts = [
         'file_size' => 'integer',
     ];
-
-    /**
-     * Get the organization that owns the File.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
 
     /**
      * Get the folder that owns the File.

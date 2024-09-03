@@ -62,15 +62,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get the organization that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
-    /**
      * Scope a query to only include active Users.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query

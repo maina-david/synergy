@@ -2,9 +2,11 @@
 
 namespace App\Traits;
 
+use App\Models\Organization\Organization;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,6 +41,16 @@ trait BelongsToOrganization
     }
 
     /**
+     * Get the organization that owns the model
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    /**
      * Check if the model belongs to an organization.
      *
      * @return bool
@@ -46,5 +58,17 @@ trait BelongsToOrganization
     public function belongsToOrganization(): bool
     {
         return !is_null($this->organization);
+    }
+
+    /**
+     * Scope a query to only include Models for Organization.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Organization $organization
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeForOrganization(Builder $query, Organization $organization): Builder
+    {
+        return $query->whereRelation('organization', 'id', $organization->id);
     }
 }

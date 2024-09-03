@@ -22,16 +22,6 @@ class OrganizationCart extends Model
     ];
 
     /**
-     * Get the organization that owns the OrganizationCart
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
-
-    /**
      * Get the user that owns the OrganizationCart
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
