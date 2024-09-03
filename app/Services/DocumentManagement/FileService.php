@@ -11,15 +11,42 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FileUploadService
+class FileService
 {
     /**
-     * Create or update a folder if it exists.
+     * List all files in a specific folder.
+     *
+     * @param Folder|null $folder
      * @param Organization|null $organization
-     * @param  string $folderName
-     * @param  Folder|null $parentFolder
-     * @return \App\Models\DocumentManagement\Folder
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function listFiles(?Folder $folder = null, ?Organization $organization = null): Collection
+    {
+        $query = File::query();
+
+        if ($folder) {
+            $query->where('folder_id', $folder->id);
+        } else {
+            $query->whereNull('folder_id');
+        }
+
+        if ($organization) {
+            $query->where('organization_id', $organization->id);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Create or update a folder if it exists.
+     *
+     * @param Organization|null $organization
+     * @param string $folderName
+     * @param Folder|null $parentFolder
+     * @return Folder
      */
     public function createOrUpdateFolder(?Organization $organization = null, string $folderName, ?Folder $parentFolder = null): Folder
     {
@@ -38,17 +65,16 @@ class FileUploadService
         );
     }
 
-
     /**
      * Upload a file and store its metadata.
      * If no folder is provided, the file is stored in the organization's root directory.
      *
-     * @param  \Illuminate\Http\UploadedFile $file
+     * @param UploadedFile $file
      * @param Organization|null $organization
-     * @param  Folder|null $folder
-     * @param  string|null $description
-     * @return \App\Models\DocumentManagement\File
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Folder|null $folder
+     * @param string|null $description
+     * @return File
+     * @throws ValidationException
      */
     public function uploadFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null, ?string $description = null): File
     {
@@ -56,15 +82,15 @@ class FileUploadService
 
         $filePath = $this->storeFile($file, $organization, $folder);
 
-        return $this->createFileRecord($file, $folder, $filePath, $description);
+        return $this->createFileRecord($file, $organization, $folder, $filePath, $description);
     }
 
     /**
      * Validate the uploaded file.
      *
-     * @param  \Illuminate\Http\UploadedFile $file
+     * @param UploadedFile $file
      * @return void
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     protected function validateFile(UploadedFile $file): void
     {
@@ -82,9 +108,9 @@ class FileUploadService
     /**
      * Store the file in the specified folder or organization's root directory.
      *
-     * @param  \Illuminate\Http\UploadedFile $file
+     * @param UploadedFile $file
      * @param Organization|null $organization
-     * @param  Folder|null $folder
+     * @param Folder|null $folder
      * @return string
      */
     protected function storeFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null): string
@@ -111,17 +137,17 @@ class FileUploadService
         return $file->store($basePath, 'public');
     }
 
-
     /**
      * Create a file record and save it to the database.
      *
-     * @param  \Illuminate\Http\UploadedFile $file
-     * @param  Folder|null $folder
-     * @param  string $filePath
-     * @param  string|null $description
-     * @return \App\Models\DocumentManagement\File
+     * @param UploadedFile $file
+     * @param Organization|null $organization
+     * @param Folder|null $folder
+     * @param string $filePath
+     * @param string|null $description
+     * @return File
      */
-    protected function createFileRecord(UploadedFile $file, ?Folder $folder, string $filePath, ?string $description = null): File
+    protected function createFileRecord(UploadedFile $file, ?Organization $organization = null, ?Folder $folder, string $filePath, ?string $description = null): File
     {
         return File::create([
             'folder_id' => $folder?->id,
@@ -130,20 +156,22 @@ class FileUploadService
             'file_type' => $file->getClientMimeType(),
             'file_size' => $file->getSize(),
             'description' => $description,
+            'organization_id' => $organization?->id ?? Auth::user()->organization_id,
         ]);
     }
 
     /**
      * Delete a file from storage and database.
      *
-     * @param  \App\Models\DocumentManagement\File $file
+     * @param File $file
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteFile(File $file): bool
     {
-        if (Storage::disk('public')->exists($file->file_path)) {
-            Storage::disk('public')->delete($file->file_path);
+        $disk = Storage::disk('public');
+        if ($disk->exists($file->file_path)) {
+            $disk->delete($file->file_path);
         }
 
         return $file->delete();
@@ -152,10 +180,9 @@ class FileUploadService
     /**
      * Rename an existing file.
      *
-     * @param  \App\Models\DocumentManagement\File $file
-     * @param  string $newName
-     * @return \App\Models\DocumentManagement\File
-     * @throws \Exception
+     * @param File $file
+     * @param string $newName
+     * @return File
      */
     public function renameFile(File $file, string $newName): File
     {
@@ -168,10 +195,9 @@ class FileUploadService
     /**
      * Move a file to a different folder.
      *
-     * @param  \App\Models\DocumentManagement\File $file
-     * @param  Folder $newFolder
-     * @return \App\Models\DocumentManagement\File
-     * @throws \Exception
+     * @param File $file
+     * @param Folder $newFolder
+     * @return File
      */
     public function moveFile(File $file, Folder $newFolder): File
     {
@@ -185,10 +211,34 @@ class FileUploadService
     }
 
     /**
+     * Move a folder to another folder.
+     *
+     * @param Folder $folder
+     * @param Folder $newParentFolder
+     * @return Folder
+     * @throws Exception
+     */
+    public function moveFolder(Folder $folder, Folder $newParentFolder): Folder
+    {
+        if ($folder->id === $newParentFolder->id) {
+            throw new Exception('A folder cannot be moved into itself.');
+        }
+
+        $folder->parent_id = $newParentFolder->id;
+        $folder->save();
+
+        foreach ($folder->files as $file) {
+            $this->moveFile($file, $newParentFolder);
+        }
+
+        return $folder;
+    }
+
+    /**
      * Store the file in a new location based on the folder.
      *
-     * @param  \App\Models\DocumentManagement\File $file
-     * @param  Folder $folder
+     * @param File $file
+     * @param Folder $folder
      * @return string
      */
     protected function storeFileAs(File $file, Folder $folder): string
@@ -205,5 +255,24 @@ class FileUploadService
         $disk->move($oldPath, $newPath);
 
         return $newPath;
+    }
+
+    /**
+     * Download a file.
+     *
+     * @param File $file
+     * @return StreamedResponse
+     * @throws Exception
+     */
+    public function downloadFile(File $file): StreamedResponse
+    {
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        if (!$disk->exists($file->file_path)) {
+            throw new Exception('File does not exist.');
+        }
+
+        return $disk->download($file->file_path, $file->file_name);
     }
 }
