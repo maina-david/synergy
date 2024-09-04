@@ -276,6 +276,27 @@ class FileService
     }
 
     /**
+     * Generate a temporary download URL for a file.
+     *
+     * @param File $file
+     * @return string
+     * @throws Exception
+     */
+    public function generateTemporaryUrl(File $file): string
+    {
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+
+        if (!$disk->exists($file->file_path)) {
+            throw new Exception('File does not exist.');
+        }
+
+        return $disk->temporaryUrl($file->file_path, now()->addHour(), [
+            'ResponseContentDisposition' => 'attachment; filename="' . $file->file_name . '"'
+        ]);
+    }
+
+    /**
      * Download a file.
      *
      * @param File $file
