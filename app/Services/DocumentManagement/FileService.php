@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileService
