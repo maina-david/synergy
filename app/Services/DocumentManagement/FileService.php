@@ -24,6 +24,10 @@ class FileService
      */
     public function generateTreeView(?Organization $organization = null, ?Folder $parentFolder = null): array
     {
+        if ($organization && $parentFolder && $parentFolder->organization_id !== $organization->id) {
+            throw new Exception('Parent folder does not belong to the specified organization.');
+        }
+
         $tree = [];
 
         $folders = Folder::where('organization_id', $organization->id ?? null)
@@ -68,6 +72,10 @@ class FileService
      */
     public function createOrUpdateFolder(?Organization $organization = null, string $folderName, ?Folder $parentFolder = null): Folder
     {
+        if ($parentFolder && $organization && $parentFolder->organization_id !== $organization->id) {
+            throw new Exception('Parent folder does not belong to the specified organization.');
+        }
+
         $attributes = [
             'name' => $folderName,
             'parent_id' => $parentFolder?->id,
@@ -75,6 +83,10 @@ class FileService
 
         if ($organization) {
             $attributes['organization_id'] = $organization->id;
+        }
+
+        if (!$organization && $parentFolder) {
+            $attributes['organization_id'] = $parentFolder->organization_id;
         }
 
         return Folder::updateOrCreate(
@@ -146,13 +158,11 @@ class FileService
             $basePath = "{$basePath}/folders/{$folder->id}";
         }
 
-        $disk = Storage::disk('public');
-
-        if (!$disk->exists($basePath)) {
-            $disk->makeDirectory($basePath);
+        if (!Storage::exists($basePath)) {
+            Storage::makeDirectory($basePath);
         }
 
-        return $file->store($basePath, 'public');
+        return $file->store($basePath, 'local');
     }
 
     /**
@@ -187,9 +197,8 @@ class FileService
      */
     public function deleteFile(File $file): bool
     {
-        $disk = Storage::disk('public');
-        if ($disk->exists($file->file_path)) {
-            $disk->delete($file->file_path);
+        if (Storage::exists($file->file_path)) {
+            Storage::delete($file->file_path);
         }
 
         return $file->delete();
@@ -261,16 +270,15 @@ class FileService
      */
     protected function storeFileAs(File $file, Folder $folder): string
     {
-        $disk = Storage::disk('public');
         $oldPath = $file->file_path;
         $newFolderPath = $folder->id ? "folders/{$folder->id}" : 'files';
         $newPath = $newFolderPath . '/' . basename($oldPath);
 
-        if (!$disk->exists($newFolderPath)) {
-            $disk->makeDirectory($newFolderPath);
+        if (!Storage::exists($newFolderPath)) {
+            Storage::makeDirectory($newFolderPath);
         }
 
-        $disk->move($oldPath, $newPath);
+        Storage::move($oldPath, $newPath);
 
         return $newPath;
     }
@@ -284,14 +292,11 @@ class FileService
      */
     public function generateTemporaryUrl(File $file): string
     {
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-        $disk = Storage::disk('public');
-
-        if (!$disk->exists($file->file_path)) {
+        if (!Storage::exists($file->file_path)) {
             throw new Exception('File does not exist.');
         }
 
-        return $disk->temporaryUrl($file->file_path, now()->addHour(), [
+        return Storage::temporaryUrl($file->file_path, now()->addHour(), [
             'ResponseContentDisposition' => 'attachment; filename="' . $file->file_name . '"'
         ]);
     }
@@ -305,13 +310,10 @@ class FileService
      */
     public function downloadFile(File $file): StreamedResponse
     {
-        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
-        $disk = Storage::disk('public');
-
-        if (!$disk->exists($file->file_path)) {
+        if (!Storage::exists($file->file_path)) {
             throw new Exception('File does not exist.');
         }
 
-        return $disk->download($file->file_path, $file->file_name);
+        return Storage::download($file->file_path, $file->file_name);
     }
 }

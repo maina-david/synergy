@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Organization\Organization;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,24 +17,23 @@ trait BelongsToOrganization
      */
     public static function bootBelongsToOrganization(): void
     {
-        static::creating(function ($model) {
+        static::creating(function (Model $model) {
             if (Auth::check() && empty($model->organization_id)) {
                 $model->organization_id = Auth::user()->organization_id;
             }
         });
 
-        static::updating(function ($model) {
+        static::updating(function (Model $model) {
             if (Auth::check() && empty($model->organization_id)) {
                 $model->organization_id = Auth::user()->organization_id;
             }
         });
 
-        static::saving(function ($model) {
+        static::saving(function (Model $model) {
             if (Auth::check() && empty($model->organization_id)) {
                 $model->organization_id = Auth::user()->organization_id;
             }
         });
-
     }
 
     /**
