@@ -17,27 +17,46 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class FileService
 {
     /**
-     * List all files in a specific folder.
+     * Generate a tree view of folders and files.
      *
-     * @param Folder|null $folder
      * @param Organization|null $organization
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param Folder|null $parentFolder
+     * @return array
      */
-    public function listFiles(?Folder $folder = null, ?Organization $organization = null): Collection
+    public function generateTreeView(?Organization $organization = null, ?Folder $parentFolder = null): array
     {
-        $query = File::query();
+        $tree = [];
 
-        if ($folder) {
-            $query->where('folder_id', $folder->id);
-        } else {
-            $query->whereNull('folder_id');
+        $folders = Folder::where('organization_id', $organization->id ?? null)
+            ->where('parent_id', $parentFolder?->id)
+            ->get();
+
+        $files = File::where('organization_id', $organization->id ?? null)
+            ->where('folder_id', $parentFolder?->id)
+            ->get();
+
+        foreach ($folders as $folder) {
+            $tree[] = [
+                'type' => 'folder',
+                'id' => $folder->id,
+                'name' => $folder->name,
+                'children' => $this->generateTreeView($organization, $folder),
+            ];
         }
 
-        if ($organization) {
-            $query->where('organization_id', $organization->id);
+        foreach ($files as $file) {
+            $tree[] = [
+                'type' => 'file',
+                'id' => $file->id,
+                'name' => $file->file_name,
+                'description' => $file->description,
+                'file_path' => $file->file_path,
+                'file_type' => $file->file_type,
+                'file_size' => $file->file_size,
+            ];
         }
 
-        return $query->get();
+        return $tree;
     }
 
     /**
