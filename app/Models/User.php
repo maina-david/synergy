@@ -86,11 +86,11 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the user's middle name.
      */
-    protected function middleName(): ?Attribute
+    protected function middleName(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => ucfirst($value),
-            set: fn(string $value) => strtolower($value),
+            get: fn(?string $value) => $value ? ucfirst($value) : null,
+            set: fn(?string $value) => $value ? strtolower($value) : null,
         );
     }
 

@@ -3,11 +3,8 @@
 namespace App\Traits;
 
 use App\Models\Organization\Organization;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Auth;
 
 trait BelongsToOrganization
@@ -37,19 +34,6 @@ trait BelongsToOrganization
             }
         });
 
-        if (static::class !== User::class) {
-            static::addGlobalScope(new class implements Scope {
-                public function apply(Builder $builder, Model $model): void
-                {
-                    if (Auth::check()) {
-                        $organizationId = Auth::user()->organization_id;
-                        if ($organizationId) {
-                            $builder->where('organization_id', $organizationId);
-                        }
-                    }
-                }
-            });
-        }
     }
 
     /**
@@ -97,26 +81,5 @@ trait BelongsToOrganization
         }
 
         return $query;
-    }
-
-    /**
-     * Temporarily disable the global organization scope for special queries.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeWithoutGlobalScope(Builder $query): Builder
-    {
-        return $query->withoutGlobalScope(new class implements Scope {
-            public function apply(Builder $builder, Model $model): void
-            {
-                if (Auth::check()) {
-                    $organizationId = Auth::user()->organization_id;
-                    if ($organizationId) {
-                        $builder->where('organization_id', $organizationId);
-                    }
-                }
-            }
-        });
     }
 }

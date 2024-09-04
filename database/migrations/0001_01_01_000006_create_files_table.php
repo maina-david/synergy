@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('organization_id')
+                ->constrained('organizations', 'id')
+                ->onDelete('cascade');
             $table->foreignUuid('folder_id')
                 ->nullable()
                 ->constrained('folders', 'id')
