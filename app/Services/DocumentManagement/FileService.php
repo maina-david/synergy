@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileService
@@ -197,11 +198,16 @@ class FileService
      */
     public function deleteFile(File $file): bool
     {
-        if (Storage::exists($file->file_path)) {
-            Storage::delete($file->file_path);
-        }
+        try {
+            if (Storage::exists($file->file_path)) {
+                Storage::delete($file->file_path);
+            }
 
-        return $file->delete();
+            return $file->delete();
+        } catch (Exception $e) {
+            Log::error('Error deleting file: ' . $e->getMessage());
+            throw new Exception('Failed to delete file.');
+        }
     }
 
     /**
@@ -213,10 +219,14 @@ class FileService
      */
     public function renameFile(File $file, string $newName): File
     {
-        $file->file_name = $newName;
-        $file->save();
-
-        return $file;
+        try {
+            $file->file_name = $newName;
+            $file->save();
+            return $file;
+        } catch (Exception $e) {
+            Log::error('Error renaming file: ' . $e->getMessage());
+            throw new Exception('Failed to rename file.');
+        }
     }
 
     /**
@@ -228,13 +238,18 @@ class FileService
      */
     public function moveFile(File $file, Folder $newFolder): File
     {
-        $newPath = $this->storeFileAs($file, $newFolder);
+        try {
+            $newPath = $this->storeFileAs($file, $newFolder);
 
-        $file->file_path = $newPath;
-        $file->folder_id = $newFolder->id;
-        $file->save();
+            $file->file_path = $newPath;
+            $file->folder_id = $newFolder->id;
+            $file->save();
 
-        return $file;
+            return $file;
+        } catch (Exception $e) {
+            Log::error('Error moving file: ' . $e->getMessage());
+            throw new Exception('Failed to move file.');
+        }
     }
 
     /**
@@ -251,14 +266,40 @@ class FileService
             throw new Exception('A folder cannot be moved into itself.');
         }
 
-        $folder->parent_id = $newParentFolder->id;
-        $folder->save();
+        try {
+            $newFolder = Folder::create([
+                'name' => $folder->name,
+                'parent_id' => $newParentFolder->id,
+                'organization_id' => $folder->organization_id,
+            ]);
 
-        foreach ($folder->files as $file) {
-            $this->moveFile($file, $newParentFolder);
+            if ($folder->files()->exists()) {
+                foreach ($folder->files as $file) {
+                    if ($file->exists) {
+                        $this->moveFile($file, $newFolder);
+                    } else {
+                        Log::warning('File does not exist: ' . $file->id);
+                    }
+                }
+            }
+
+            if ($folder->children()->exists()) {
+                foreach ($folder->children as $subFolder) {
+                    if ($subFolder->exists) {
+                        $this->moveFolder($subFolder, $newFolder);
+                    } else {
+                        Log::warning('Subfolder does not exist: ' . $subFolder->id);
+                    }
+                }
+            }
+
+            $folder->delete();
+
+            return $newFolder;
+        } catch (Exception $e) {
+            Log::error('Error moving folder: ' . $e->getMessage());
+            throw new Exception('Failed to move folder.');
         }
-
-        return $folder;
     }
 
     /**
@@ -290,15 +331,14 @@ class FileService
      * @return string
      * @throws Exception
      */
-    public function generateTemporaryUrl(File $file): string
+    public function generateTemporaryUrl(File $file, int $expirationMinutes = 60): string
     {
-        if (!Storage::exists($file->file_path)) {
-            throw new Exception('File does not exist.');
+        try {
+            return Storage::temporaryUrl($file->file_path, now()->addMinutes($expirationMinutes));
+        } catch (Exception $e) {
+            Log::error('Error generating temporary URL: ' . $e->getMessage());
+            throw new Exception('Failed to generate temporary URL.');
         }
-
-        return Storage::temporaryUrl($file->file_path, now()->addHour(), [
-            'ResponseContentDisposition' => 'attachment; filename="' . $file->file_name . '"'
-        ]);
     }
 
     /**
@@ -310,10 +350,11 @@ class FileService
      */
     public function downloadFile(File $file): StreamedResponse
     {
-        if (!Storage::exists($file->file_path)) {
-            throw new Exception('File does not exist.');
+        try {
+            return Storage::download($file->file_path, $file->file_name);
+        } catch (Exception $e) {
+            Log::error('Error downloading file: ' . $e->getMessage());
+            throw new Exception('Failed to download file.');
         }
-
-        return Storage::download($file->file_path, $file->file_name);
     }
 }
