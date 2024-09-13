@@ -2,7 +2,10 @@
 
 namespace App\Services\DocumentManagement;
 
+use App\Jobs\ProcessFileDelete;
+use App\Jobs\ProcessFileMove;
 use App\Jobs\ProcessFileUpload;
+use App\Jobs\ProcessFolderMove;
 use App\Models\Organization\Organization;
 use App\Models\DocumentManagement\File;
 use App\Models\DocumentManagement\Folder;
@@ -143,7 +146,7 @@ class FileService
      * @param Folder|null $folder
      * @return string
      */
-    protected function storeFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null): string
+    public function storeFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null): string
     {
         $user = Auth::user();
         $organizationId = $organization?->id ?? $user?->organization_id;
@@ -175,7 +178,7 @@ class FileService
      * @param string|null $description
      * @return File
      */
-    protected function createFileRecord(UploadedFile $file, ?Organization $organization = null, ?Folder $folder, string $filePath, ?string $description = null): File
+    public function createFileRecord(UploadedFile $file, ?Organization $organization = null, ?Folder $folder, string $filePath, ?string $description = null): File
     {
         return File::create([
             'folder_id' => $folder?->id,
@@ -192,21 +195,12 @@ class FileService
      * Delete a file from storage and database.
      *
      * @param File $file
-     * @return bool
+     * @return void
      * @throws Exception
      */
-    public function deleteFile(File $file): bool
+    public function deleteFile(File $file): void
     {
-        try {
-            if (Storage::exists($file->file_path)) {
-                Storage::delete($file->file_path);
-            }
-
-            return $file->delete();
-        } catch (Exception $e) {
-            Log::error('Error deleting file: ' . $e->getMessage());
-            throw new Exception('Failed to delete file.');
-        }
+        ProcessFileDelete::dispatch($file);
     }
 
     /**
@@ -233,22 +227,11 @@ class FileService
      *
      * @param File $file
      * @param Folder $newFolder
-     * @return File
+     * @return void
      */
-    public function moveFile(File $file, Folder $newFolder): File
+    public function moveFile(File $file, Folder $newFolder): void
     {
-        try {
-            $newPath = $this->storeFileAs($file, $newFolder);
-
-            $file->file_path = $newPath;
-            $file->folder_id = $newFolder->id;
-            $file->save();
-
-            return $file;
-        } catch (Exception $e) {
-            Log::error('Error moving file: ' . $e->getMessage());
-            throw new Exception('Failed to move file.');
-        }
+        ProcessFileMove::dispatch($file, $newFolder);
     }
 
     /**
@@ -256,49 +239,12 @@ class FileService
      *
      * @param Folder $folder
      * @param Folder $newParentFolder
-     * @return Folder
+     * @return void
      * @throws Exception
      */
-    public function moveFolder(Folder $folder, Folder $newParentFolder): Folder
+    public function moveFolder(Folder $folder, Folder $newParentFolder): void
     {
-        if ($folder->id === $newParentFolder->id) {
-            throw new Exception('A folder cannot be moved into itself.');
-        }
-
-        try {
-            $newFolder = Folder::create([
-                'name' => $folder->name,
-                'parent_id' => $newParentFolder->id,
-                'organization_id' => $folder->organization_id,
-            ]);
-
-            if ($folder->files()->exists()) {
-                foreach ($folder->files as $file) {
-                    if ($file->exists) {
-                        $this->moveFile($file, $newFolder);
-                    } else {
-                        Log::warning('File does not exist: ' . $file->id);
-                    }
-                }
-            }
-
-            if ($folder->children()->exists()) {
-                foreach ($folder->children as $subFolder) {
-                    if ($subFolder->exists) {
-                        $this->moveFolder($subFolder, $newFolder);
-                    } else {
-                        Log::warning('Subfolder does not exist: ' . $subFolder->id);
-                    }
-                }
-            }
-
-            $folder->delete();
-
-            return $newFolder;
-        } catch (Exception $e) {
-            Log::error('Error moving folder: ' . $e->getMessage());
-            throw new Exception('Failed to move folder.');
-        }
+        ProcessFolderMove::dispatch($folder, $newParentFolder);
     }
 
     /**
@@ -308,7 +254,7 @@ class FileService
      * @param Folder $folder
      * @return string
      */
-    protected function storeFileAs(File $file, Folder $folder): string
+    public function storeFileAs(File $file, Folder $folder): string
     {
         $oldPath = $file->file_path;
         $newFolderPath = $folder->id ? "folders/{$folder->id}" : 'files';
