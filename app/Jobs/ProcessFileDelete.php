@@ -6,7 +6,7 @@ use App\Models\DocumentManagement\File;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\Skip;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,8 +30,15 @@ class ProcessFileDelete implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping("file:{$this->file}"))->shared(),
+            Skip::when(function (): bool {
+                return $this->shouldSkip();
+            }),
         ];
+    }
+
+    private function shouldSkip(): bool
+    {
+        return $this->file->folder && $this->file->folder->isBeingMoved();
     }
 
     /**

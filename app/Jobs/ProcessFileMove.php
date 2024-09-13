@@ -8,7 +8,7 @@ use App\Services\DocumentManagement\FileService;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\Skip;
 use Illuminate\Support\Facades\Log;
 
 class ProcessFileMove implements ShouldQueue
@@ -18,7 +18,7 @@ class ProcessFileMove implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected File $file, protected ?Folder $newFolder = null)
+    public function __construct(protected File $file, protected Folder $newFolder)
     {
         $this->file = $file;
         $this->newFolder = $newFolder;
@@ -32,9 +32,15 @@ class ProcessFileMove implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping("file:{$this->file}"))->shared(),
-            (new WithoutOverlapping("folder:{$this->newFolder}"))->shared(),
+            Skip::when(function (): bool {
+                return $this->shouldSkip();
+            }),
         ];
+    }
+
+    private function shouldSkip(): bool
+    {
+        return $this->file->folder && $this->file->folder->isBeingMoved() && $this->newFolder->isBeingMoved();
     }
 
     /**

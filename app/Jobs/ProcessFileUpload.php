@@ -8,7 +8,7 @@ use App\Services\DocumentManagement\FileService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Queue\Middleware\Skip;
 
 class ProcessFileUpload implements ShouldQueue
 {
@@ -33,8 +33,20 @@ class ProcessFileUpload implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping("folder:{$this->folder}"))->shared(),
+            Skip::when(function (): bool {
+                return $this->shouldSkip();
+            }),
         ];
+    }
+
+    /**
+     * Check if the job should skip.
+     *
+     * @return bool
+     */
+    private function shouldSkip(): bool
+    {
+        return $this->folder && $this->folder->isBeingMoved();
     }
 
     /**

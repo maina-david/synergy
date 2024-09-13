@@ -46,6 +46,8 @@ class ProcessFolderMove implements ShouldQueue
         }
 
         try {
+            $this->folder->setBeingMoved();
+
             $fileService = new FileService();
 
             $newFolder = Folder::create([
@@ -76,6 +78,7 @@ class ProcessFolderMove implements ShouldQueue
 
             $this->folder->delete();
         } catch (Exception $e) {
+            $this->folder->clearBeingMoved();
             Log::error('Error moving folder: ' . $e->getMessage());
             throw new Exception('Failed to move folder.');
         }

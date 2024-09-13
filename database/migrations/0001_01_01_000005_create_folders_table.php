@@ -24,6 +24,7 @@ return new class extends Migration
                 ->constrained('folders', 'id')
                 ->onDelete('cascade');
             $table->string('name');
+            $table->boolean('is_being_moved')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

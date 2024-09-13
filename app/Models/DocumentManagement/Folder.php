@@ -19,7 +19,8 @@ class Folder extends Model
         'organization_id',
         'user_id',
         'name',
-        'parent_id'
+        'parent_id',
+        'is_being_moved'
     ];
 
     /**
@@ -50,5 +51,37 @@ class Folder extends Model
     public function files(): HasMany
     {
         return $this->hasMany(File::class);
+    }
+
+    /**
+     * Check if the folder is currently being moved.
+     *
+     * @return bool
+     */
+    public function isBeingMoved(): bool
+    {
+        return $this->is_being_moved;
+    }
+
+    /**
+     * Set the folder as being moved.
+     *
+     * @return void
+     */
+    public function setBeingMoved(): void
+    {
+        $this->is_being_moved = true;
+        $this->save();
+    }
+
+    /**
+     * Clear the folder's moving status.
+     *
+     * @return void
+     */
+    public function clearBeingMoved(): void
+    {
+        $this->is_being_moved = false;
+        $this->save();
     }
 }
