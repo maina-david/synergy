@@ -17,7 +17,7 @@ class ProcessFileUpload implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(protected UploadedFile $file, protected ?Organization $organization = null, protected  ?Folder $folder = null, protected ?string $description = null)
+    public function __construct(protected UploadedFile $file, protected ?Organization $organization = null, protected ?Folder $folder = null, protected ?string $description = null)
     {
         $this->file = $file;
         $this->organization = $organization;
