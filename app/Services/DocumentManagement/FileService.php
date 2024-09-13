@@ -2,6 +2,7 @@
 
 namespace App\Services\DocumentManagement;
 
+use App\Jobs\ProcessFileUpload;
 use App\Models\Organization\Organization;
 use App\Models\DocumentManagement\File;
 use App\Models\DocumentManagement\Folder;
@@ -104,16 +105,14 @@ class FileService
      * @param Organization|null $organization
      * @param Folder|null $folder
      * @param string|null $description
-     * @return File
+     * @return void
      * @throws ValidationException
      */
-    public function uploadFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null, ?string $description = null): File
+    public function uploadFile(UploadedFile $file, ?Organization $organization = null, ?Folder $folder = null, ?string $description = null): void
     {
         $this->validateFile($file);
 
-        $filePath = $this->storeFile($file, $organization, $folder);
-
-        return $this->createFileRecord($file, $organization, $folder, $filePath, $description);
+        ProcessFileUpload::dispatch($file, $organization, $folder, $description);
     }
 
     /**
